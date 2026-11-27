@@ -17,18 +17,6 @@
 */
 window.LAODEER_GAMES = [
   {
-    "id": "soul",
-    "title": "SOUL",
-    "intro": "Use elemental souls to solve puzzles and uncover a story told without words in this atmospheric 2.5D adventure.",
-    "status": "개발 중",
-    "released": "미정",
-    "devPeriod": "2025년 말 ~",
-    "developer": "Jeon Seong min",
-    "publisher": "LaoDeer",
-    "image": "assets/examples/key-scene.svg",
-    "alt": "SOUL 대표 장면"
-  },
-  {
     "id": "itch-io",
     "title": "Sleeve it!",
     "intro": "20초 게임잼으로 시작한 카드보관 캐주얼 게임 \"Sleeve it\" 입니다",
@@ -43,7 +31,20 @@ window.LAODEER_GAMES = [
         "url": "https://laodeer.itch.io/sleeve-it"
       }
     ],
-    "image": "images/2026/game-itch-io-0t8c.png"
+    "image": "images/2026/game-itch-io-0t8c.png",
+    "itch": "https://laodeer.itch.io/sleeve-it"
+  },
+  {
+    "id": "soul",
+    "title": "SOUL",
+    "intro": "Use elemental souls to solve puzzles and uncover a story told without words in this atmospheric 2.5D adventure.",
+    "status": "개발 중",
+    "released": "미정",
+    "devPeriod": "2025년 말 ~",
+    "developer": "Jeon Seong min",
+    "publisher": "LaoDeer",
+    "image": "assets/examples/key-scene.svg",
+    "alt": "SOUL 대표 장면"
   },
   {
     "id": "under-jacpot",

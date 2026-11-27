@@ -19,6 +19,22 @@
 
   /* ---------- 준비 ---------- */
 
+  /* itch.io 개발일지 (tools/sync-itch.mjs 가 만든 data/itch.js) 를 기록에 합침 */
+  (window.LAODEER_ITCH || []).forEach(function (p) {
+    RECORDS.push({
+      id: p.id, date: p.date, type: "개발일지", title: p.title, body: p.excerpt || p.title,
+      html: p.html || "", cover: p.cover, link: p.link, game: p.game, source: "itch"
+    });
+  });
+
+  /* 여기서 직접 쓴 기록과 itch에서 가져온 글의 제목이 같으면, 본문이 더 온전한 itch 글만 보여줌 */
+  (function () {
+    function norm(t) { return String(t || "").toLowerCase().replace(/\s+/g, " ").trim(); }
+    var itchTitles = {};
+    RECORDS.forEach(function (r) { if (r.source === "itch") itchTitles[norm(r.title)] = true; });
+    RECORDS = RECORDS.filter(function (r) { return r.source === "itch" || !r.title || !itchTitles[norm(r.title)]; });
+  })();
+
   RECORDS.forEach(function (r, i) {
     r._i = i;
     if (!TYPES[r.type]) console.warn("[LaoDeer] 알 수 없는 분류:", r.type, r);
@@ -134,9 +150,32 @@
     }
   }
 
+  /* ---------- itch.io 에서 가져온 글 ---------- */
+
+  function zoomifyHTML(h, caption) {
+    return String(h).replace(/<img\b[^>]*?\ssrc="([^"]+)"[^>]*>/g, function (m, src) {
+      return zoomable(src.replace(/&amp;/g, "&"), caption, caption, false);
+    });
+  }
+  function renderItch(r, opts) {
+    var dt = parseDate(r.date), rid = "more-" + r._i;
+    var html = "<h3>" + esc(r.title) + "</h3>" +
+      (r.cover ? '<figure class="shot">' + zoomable(r.cover, r.title, r.title, opts.index === 0 && !opts.lazy) + "</figure>" : "") +
+      '<p class="lede itch-lede">' + esc(r.body) + "</p>" +
+      (r.html ? '<div class="more post-html" id="' + rid + '" hidden>' + zoomifyHTML(r.html, r.title) + "</div>" : "") +
+      '<p class="itch-actions">' +
+        (r.html ? '<button class="read" type="button" aria-expanded="false" aria-controls="' + rid + '">이어 읽기</button>' : "") +
+        (r.link ? '<a class="itch-link" href="' + esc(r.link) + '" target="_blank" rel="noopener">itch.io에서 보기</a>' : "") +
+      "</p>" + gameLink(r, opts.game);
+    var meta = '<div class="meta"><time datetime="' + esc(r.date) + '">' + dt.m + "월 " + dt.d + "일</time>" +
+      '<span class="kind">개발일지</span><span class="src-itch">itch.io</span></div>';
+    return '<article class="entry devlog itch" tabindex="-1" id="' + esc(r.id) + '"><div class="body">' + html + "</div>" + meta + "</article>";
+  }
+
   /* ---------- 기록 한 개 ---------- */
 
   function renderRecord(r, opts) {
+    if (r.source === "itch") return renderItch(r, opts);
     var kind = TYPES[r.type];
     var dt = parseDate(r.date);
     var first = opts.index === 0 && !opts.lazy;
@@ -255,6 +294,8 @@
     var more = document.getElementById(b.getAttribute("aria-controls"));
     var open = b.getAttribute("aria-expanded") === "true";
     more.hidden = open;
+    var lede = b.closest(".entry") && b.closest(".entry").querySelector(".itch-lede");
+    if (lede) lede.hidden = !open; // itch 글은 펼치면 요약 대신 본문 전체를 보여줌
     b.setAttribute("aria-expanded", open ? "false" : "true");
     b.textContent = open ? "이어 읽기" : "접기";
   });

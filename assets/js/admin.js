@@ -146,7 +146,7 @@
   }
   function cleanRecord(r) { return pick(r, ["id", "date", "type", "title", "body", "image", "alt", "game", "example"]); }
   function cleanGame(g) {
-    var o = pick(g, ["id", "title", "intro", "status", "released", "devPeriod", "developer", "publisher", "platforms", "stores", "image", "alt", "example"]);
+    var o = pick(g, ["id", "title", "intro", "status", "released", "devPeriod", "developer", "publisher", "platforms", "stores", "itch", "image", "alt", "example"]);
     if (o.platforms) o.platforms = o.platforms.map(function (p) { return p.trim(); }).filter(Boolean);
     if (o.stores) o.stores = o.stores.filter(function (s) { return s.label && s.label.trim(); })
       .map(function (s) { return { label: s.label.trim(), url: (s.url || "").trim() || "#" }; });
@@ -592,6 +592,7 @@
     return {
       id: g.id || "", title: g.title || "", intro: g.intro || "", released: g.released || "",
       status: g.status || "개발 중", devPeriod: g.devPeriod || "", developer: g.developer || "", publisher: g.publisher || "",
+      itch: g.itch || "",
       platforms: (g.platforms || []).join(", "), stores: (g.stores || []).map(function (s) { return { label: s.label, url: s.url }; }),
       image: g.image || "", alt: g.alt || "", example: !!g.example, _idTouched: !!g.id,
       _file: null, _blob: "", _remove: false
@@ -663,6 +664,7 @@
           '<label class="a-field"><span>퍼블리셔</span><input type="text" name="publisher" value="' + esc(d.publisher) + '"></label>' +
         "</div>" +
         '<label class="a-field"><span>플랫폼 <small>쉼표로 나눠요</small></span><input type="text" name="platforms" value="' + esc(d.platforms) + '" placeholder="PC, Switch"></label>' +
+        '<label class="a-field"><span>itch.io 게임 주소 <small>적으면 itch에 쓴 개발일지를 6시간마다 자동으로 가져와 DEVLOG에 보여줘요</small></span><input type="url" name="itch" value="' + esc(d.itch) + '" placeholder="https://laodeer.itch.io/게임이름"></label>' +
         '<div class="a-field"><span>스토어 링크</span><div class="a-stores" id="stores">' +
           d.stores.map(function (s, i) {
             return '<div class="a-store-row"><input type="text" data-s="label" data-i="' + i + '" value="' + esc(s.label) + '" placeholder="버튼 글자 (예: Steam에서 보기)" aria-label="버튼 글자">' +
@@ -715,6 +717,7 @@
     if (!f || !d) return;
     d.title = f.title.value; d.id = f.id.value.trim(); d.intro = f.intro.value;
     d.released = f.released.value; d.platforms = f.platforms.value; d.alt = f.alt.value;
+    d.itch = f.itch.value.trim();
     d.devPeriod = f.devPeriod.value; d.developer = f.developer.value; d.publisher = f.publisher.value;
     var st = f.querySelector('input[name="status"]:checked');
     d.status = st ? st.value : "개발 중";
@@ -724,7 +727,7 @@
   function gameFromDraft(d) {
     return cleanGame({
       id: d.id, title: d.title, intro: d.intro, released: d.released, status: d.status,
-      devPeriod: d.devPeriod, developer: d.developer, publisher: d.publisher,
+      devPeriod: d.devPeriod, developer: d.developer, publisher: d.publisher, itch: d.itch,
       platforms: d.platforms.split(","), stores: d.stores, image: d.image, alt: d.alt, example: d.example
     });
   }
@@ -756,6 +759,7 @@
     if (!/^[a-z0-9-]+$/.test(d.id)) problems.push("주소 이름은 영문 소문자, 숫자, -만 쓸 수 있어요.");
     else if (S.games.some(function (g) { return g.id === d.id && g !== S.game.sel; })) problems.push("같은 주소 이름을 쓰는 게임이 이미 있어요.");
     if (!d.intro.trim() && d.status !== "공개 예정") problems.push("짧은 소개를 적어주세요.");
+    if (d.itch && !/^https:\/\/[a-z0-9-]+\.itch\.io\/\S+$/i.test(d.itch)) problems.push("itch.io 주소는 https://아이디.itch.io/게임이름 모양이어야 해요.");
     if (problems.length) { err.textContent = problems.join(" "); return; }
     err.textContent = "";
     try {

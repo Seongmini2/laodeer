@@ -32,18 +32,26 @@ window.LAODEER_RECORDS = [
     "example": true
   },
   {
-    "date": "2026-11-21",
-    "type": "개발일지",
-    "title": "개발일지 제목 예시",
-    "body": "그날 작업을 한두 문장으로 적는 자리예요.\n\n- 바꾼 점 첫 번째 예시\n- 바꾼 점 두 번째 예시\n- 바꾼 점 세 번째 예시",
-    "image": "assets/examples/screenshot-1.svg",
-    "game": "soul",
+    "date": "2026-11-18",
+    "type": "생각",
+    "body": "제목 없이 짧게 남긴 생각의 예시입니다. 이런 기록은 홈에서 끝까지 다 읽을 수 있어요.",
     "example": true
   },
   {
     "date": "2026-11-18",
-    "type": "생각",
-    "body": "제목 없이 짧게 남긴 생각의 예시입니다. 이런 기록은 홈에서 끝까지 다 읽을 수 있어요.",
+    "type": "개발일지",
+    "title": "Sleeve It! v1.2.0 — Collect Cards, Build Combos, Aim for Perfect!",
+    "body": "제목 없이 짧게 남긴 개발일지 예시.\n\n- 바꾼 점 한 줄 예시",
+    "image": "images/2026/2026-11-18-zcum.png",
+    "game": "itch-io"
+  },
+  {
+    "date": "2026-11-16",
+    "type": "개발일지",
+    "title": "Sleeve It! Update — Online Leaderboards Are Here!",
+    "body": "새로운 소식\n\n- **개인 최고 수익 추적:** 최고 수익 기록은 기기에 로컬로 저장됩니다.\n\n- **온라인 순위표:** 점수를 제출하고 다른 플레이어들과 비교해 보세요!\n\n- **전체 화면 버튼:** 플레이어의 요청에 따라 추가되었습니다.",
+    "image": "images/2026/2026-11-16-7w6l.png",
+    "game": "itch-io",
     "example": true
   },
   {
@@ -59,13 +67,6 @@ window.LAODEER_RECORDS = [
     "type": "생각",
     "title": "생각 글 제목 예시",
     "body": "홈에서는 이 첫 문장까지만 보여줍니다. 그 뒤 문장부터는 '이어 읽기'를 눌렀을 때 펼쳐져요.\n\n두 번째 문단 예시입니다. 실제 글로 바꾸면 길이에 맞춰 자연스럽게 늘어나요.\n\n세 번째 문단 예시입니다.",
-    "example": true
-  },
-  {
-    "date": "2026-10-29",
-    "type": "개발일지",
-    "body": "제목 없이 짧게 남긴 개발일지 예시.\n\n- 바꾼 점 한 줄 예시",
-    "game": "soul",
     "example": true
   },
   {
