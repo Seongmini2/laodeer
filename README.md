@@ -66,29 +66,46 @@
 
 저장할 때마다 바로 전 파일이 `_backup/` 폴더에 남아요(파일마다 최근 30개). 되살리려면 원하는 시점의 백업 파일을 `data/` 폴더에 복사하고, 이름을 `records.js`(또는 `games.js`, `studio.js`)로 바꾸면 됩니다. 아래의 GitHub를 쓰면 모든 변경 기록이 남아서 그쪽에서도 되돌릴 수 있어요.
 
-## 사이트 공개하기 (GitHub Pages, 무료)
+## 사이트 공개하기 (GitHub Pages)
 
-관리 화면에서 저장하면 **내 PC의 폴더**가 바뀝니다. 인터넷 사이트에 반영하려면 그 폴더를 올려야 해요. 무료이고 변경 기록이 남는 **GitHub Pages + GitHub Desktop**을 추천해요.
+이 사이트는 이미 공개되어 있어요.
 
-### 처음 한 번 (10분 정도)
+- 사이트 주소: https://seongmini2.github.io/laodeer/
+- 저장소: https://github.com/Seongmini2/laodeer (공개 저장소, main 브랜치를 그대로 내보냄)
 
-1. [github.com](https://github.com)에서 계정을 만듭니다.
-2. [GitHub Desktop](https://desktop.github.com)을 설치하고 로그인합니다.
-3. GitHub Desktop에서 **File → Add local repository**로 이 `laoDeer_web` 폴더를 고릅니다. "저장소가 아니에요"라고 나오면 **create a repository**를 눌러 만듭니다.
-4. **Publish repository**를 누릅니다. 이때 *Keep this code private* 체크를 풀어야 무료 GitHub Pages를 쓸 수 있어요.
-5. github.com에서 저장소 → **Settings → Pages**로 갑니다. **Branch: main / (root)**를 고르고 저장합니다.
-6. 1~2분 뒤 `https://내아이디.github.io/laoDeer_web/` 주소로 사이트가 열려요.
+관리 화면에서 저장하면 **내 PC의 폴더**만 바뀝니다. 인터넷 사이트에 반영하려면 바뀐 파일을 GitHub에 올려야 해요. 올리고 1~2분 뒤 사이트에 반영돼요.
 
-### 그 뒤로 글을 올릴 때마다
+### 방법 1: GitHub Desktop (버튼으로)
 
+처음 한 번:
+1. [GitHub Desktop](https://desktop.github.com)을 설치하고 Seongmini2 계정으로 로그인합니다.
+2. **File → Add local repository**로 이 `laoDeer_web` 폴더를 고릅니다. (이미 저장소라서 바로 추가돼요.)
+
+그 뒤로 매번:
 1. `admin.html`에서 쓰고 저장.
-2. GitHub Desktop을 열고, 왼쪽 아래 칸에 "새 그림"처럼 짧게 적은 뒤 **Commit to main**.
-3. **Push origin**. 1~2분 뒤 사이트에 반영돼요.
+2. GitHub Desktop 왼쪽 아래 칸에 "새 그림"처럼 짧게 적고 **Commit to main**.
+3. **Push origin**.
+
+### 방법 2: 명령어 한 줄씩
+
+이 폴더에서 터미널(PowerShell)을 열고:
+
+```powershell
+git add -A
+```
+
+```powershell
+git commit -m "새 기록"
+```
+
+```powershell
+git push
+```
 
 알아두기
 - 공개된 사이트에도 `admin.html`이 같이 올라가지만, 이 화면은 **그걸 연 사람의 PC 폴더**만 고칠 수 있어서 다른 사람이 사이트를 바꿀 수는 없어요.
-- `_backup/` 폴더는 GitHub Pages에서 공개되지 않아요. 밑줄(_)로 시작하는 폴더는 GitHub Pages가 기본으로 빼고 내보내요.
-- 나중에 개인 도메인(laodeer.com 같은)을 연결하고 싶으면 Settings → Pages의 Custom domain에서 할 수 있어요.
+- `_backup/` 폴더는 `.gitignore`에 들어 있어서 GitHub에 올라가지 않고 내 PC에만 남아요. GitHub 쪽에는 커밋마다 모든 변경 기록이 남아서, 저장소 페이지의 History에서 예전 상태를 볼 수 있어요.
+- 개인 도메인(laodeer.com 같은)을 연결하려면 저장소 **Settings → Pages → Custom domain**에 도메인을 적고, 도메인 업체에서 DNS를 GitHub Pages로 연결하면 돼요.
 
 ## 파일로 직접 고치기 (참고)
 
