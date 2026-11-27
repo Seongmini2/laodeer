@@ -47,11 +47,10 @@ html { -webkit-text-size-adjust: 100%; scroll-padding-top: 1rem; }
 body {
   margin: 0;
   background-color: var(--green);
+  /* 은은하게 일렁이는 빛은 .ambient 층(fx.js가 넣음)에서. 스크립트가 없을 때를 위한 고정 빛 */
   background-image:
-    radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, rgba(2, 22, 14, .5) 100%),
-    radial-gradient(ellipse 60% 45% at 12% 8%, rgba(46, 125, 82, .38), transparent 70%),
-    radial-gradient(ellipse 50% 40% at 92% 38%, rgba(253, 168, 40, .07), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 30% 85%, rgba(24, 96, 60, .35), transparent 70%);
+    radial-gradient(ellipse 60% 45% at 12% 8%, rgba(46, 125, 82, .3), transparent 70%),
+    radial-gradient(ellipse 70% 50% at 30% 85%, rgba(24, 96, 60, .28), transparent 70%);
   background-repeat: no-repeat;
   background-attachment: fixed;
   color: var(--ink);
@@ -997,3 +996,59 @@ kbd { display: inline-block; min-width: 1.7em; padding: 0 .4em; border: 2px soli
   .shot-thumb { width: 5.2rem; }
 }
 .yt-note { position: absolute; left: 50%; bottom: .9rem; transform: translateX(-50%); padding: .2rem .8rem; border-radius: 999px; background: rgba(3, 32, 21, .8); color: var(--cream); font-family: var(--display); font-size: .75rem; white-space: nowrap; }
+
+/* ---------- 배경: 천천히 일렁이는 빛 ----------
+   큰 빛 덩어리들이 모양을 바꾸며 30~40초에 걸쳐 흘러다님. 움직임은 transform 만 써서 가볍게.
+   가장자리는 ::after 그늘로 눌러줌. 움직임 줄이기 설정이면 멈춘 채로. */
+.ambient { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.ambient i {
+  position: absolute;
+  display: block;
+  width: 62vmax;
+  height: 62vmax;
+  border-radius: 46% 54% 58% 42% / 44% 48% 52% 56%;
+  will-change: transform, border-radius;
+}
+.ambient i:nth-child(1) {
+  left: -18vmax; top: -22vmax;
+  background: radial-gradient(closest-side, rgba(58, 146, 98, .42), rgba(58, 146, 98, .12) 55%, transparent);
+  animation: amb-a 34s ease-in-out infinite alternate, amb-morph 21s ease-in-out infinite alternate;
+}
+.ambient i:nth-child(2) {
+  right: -24vmax; top: 18vh;
+  width: 56vmax; height: 56vmax;
+  background: radial-gradient(closest-side, rgba(24, 104, 66, .5), rgba(24, 104, 66, .14) 55%, transparent);
+  animation: amb-b 41s ease-in-out infinite alternate, amb-morph 26s ease-in-out -8s infinite alternate;
+}
+.ambient i:nth-child(3) {
+  left: 8vw; bottom: -30vmax;
+  width: 70vmax; height: 70vmax;
+  background: radial-gradient(closest-side, rgba(36, 120, 76, .38), rgba(36, 120, 76, .1) 55%, transparent);
+  animation: amb-c 38s ease-in-out infinite alternate, amb-morph 24s ease-in-out -14s infinite alternate;
+}
+.ambient i:nth-child(4) {
+  right: 6vw; top: -10vmax;
+  width: 38vmax; height: 38vmax;
+  background: radial-gradient(closest-side, rgba(253, 168, 40, .1), rgba(253, 168, 40, .03) 55%, transparent);
+  animation: amb-d 29s ease-in-out infinite alternate, amb-morph 19s ease-in-out -5s infinite alternate;
+}
+.ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, rgba(2, 22, 14, .5) 100%);
+}
+@keyframes amb-a { to { transform: translate3d(22vw, 14vh, 0) scale(1.12) rotate(18deg); } }
+@keyframes amb-b { to { transform: translate3d(-26vw, 20vh, 0) scale(.9) rotate(-24deg); } }
+@keyframes amb-c { to { transform: translate3d(18vw, -22vh, 0) scale(1.08) rotate(14deg); } }
+@keyframes amb-d { to { transform: translate3d(-30vw, 34vh, 0) scale(1.2) rotate(-30deg); } }
+@keyframes amb-morph {
+  0%   { border-radius: 46% 54% 58% 42% / 44% 48% 52% 56%; }
+  50%  { border-radius: 58% 42% 40% 60% / 56% 40% 60% 44%; }
+  100% { border-radius: 40% 60% 54% 46% / 50% 62% 38% 50%; }
+}
+@media (max-width: 760px) {
+  .ambient i { width: 90vmax; height: 90vmax; }
+}
+/* 첫 화면 장면은 일렁이는 빛 위에 (장면 색이 물들지 않게) */
+.hero-bg, .hero::after { z-index: 1; }

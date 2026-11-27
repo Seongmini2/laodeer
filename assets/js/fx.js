@@ -534,7 +534,21 @@
 
   /* ---------- 시작 ---------- */
 
+  /* ---------- 배경의 일렁이는 빛 (움직임은 CSS) ---------- */
+
+  function initAmbient() {
+    if (document.querySelector(".ambient")) return;
+    var a = el("div", { class: "ambient", "aria-hidden": "true" }, "<i></i><i></i><i></i><i></i>");
+    document.body.insertBefore(a, document.body.firstChild);
+    // 다른 탭에 가 있을 땐 멈춰서 배터리 아끼기
+    document.addEventListener("visibilitychange", function () {
+      a.style.animationPlayState = document.hidden ? "paused" : "";
+      [].forEach.call(a.children, function (i) { i.style.animationPlayState = document.hidden ? "paused" : ""; });
+    });
+  }
+
   function boot() {
+    initAmbient();
     bindTilt(document);
     initPad();
     initHero();
