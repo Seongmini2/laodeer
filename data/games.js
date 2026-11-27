@@ -67,6 +67,23 @@ window.LAODEER_GAMES = [
     ]
   },
   {
+    "id": "still-your-turn",
+    "title": "STILL-YOUR-TURN",
+    "intro": "손 끝에 감각을 집중해 살아남으세요",
+    "status": "개발 중",
+    "released": "미정",
+    "developer": "기이한 괴물과 규칙이 적용된 젠가를 하며 괴물을 상대로 살아남는 게임입니다",
+    "publisher": "LaoDeer",
+    "platforms": [
+      "PC"
+    ],
+    "image": "images/2026/game-still-your-turn-dgzb.png",
+    "screenshots": [
+      "https://www.youtube.com/watch?v=xFQ9OsZS0wI",
+      "images/2026/shot-still-your-turn-z68x.png"
+    ]
+  },
+  {
     "id": "coralvale",
     "title": "Coralvale",
     "intro": "하늘을 항해하는 멀티 액션 생존게임",
@@ -83,13 +100,7 @@ window.LAODEER_GAMES = [
         "url": "#"
       }
     ],
-    "image": "images/2026/game-coralvale-qgpa.png",
-    "screenshots": [
-      "images/2026/shot-coralvale-lq9g.png",
-      "images/2026/shot-coralvale-xggk.png",
-      "images/2026/shot-coralvale-9zmv.png",
-      "images/2026/shot-coralvale-6rd8.png"
-    ]
+    "image": "images/2026/game-coralvale-qgpa.png"
   },
   {
     "id": "soul",

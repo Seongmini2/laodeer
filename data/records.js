@@ -58,32 +58,14 @@ window.LAODEER_RECORDS = [
     "image": "images/2026/2026-11-23-bx0u.png"
   },
   {
-    "date": "2026-11-12",
-    "type": "그림",
-    "body": "가로로 긴 그림의 캡션 예시.",
-    "image": "assets/examples/drawing-landscape.svg",
-    "example": true
-  },
-  {
-    "id": "essay-example",
-    "date": "2026-11-05",
-    "type": "개발일지",
-    "title": "생각 글 제목 예시",
-    "body": "홈에서는 이 첫 문장까지만 보여줍니다. 그 뒤 문장부터는 '이어 읽기'를 눌렀을 때 펼쳐져요.\n\n두 번째 문단 예시입니다. 실제 글로 바꾸면 길이에 맞춰 자연스럽게 늘어나요.\n\n세 번째 문단 예시입니다."
-  },
-  {
-    "date": "2026-10-20",
-    "type": "그림",
-    "body": "정사각형 그림의 캡션 예시.",
-    "image": "assets/examples/drawing-square.svg",
+    "date": "2024-01-10",
+    "type": "생각",
+    "tags": [
+      "잡다한이야기"
+    ],
+    "title": "게임개발의 시작점",
+    "body": "게임 SOUL 은 제가 약 3년전 게임개발을 시작하며 기획을 시작한 게임입니다\n많은 세월이 흐른만큼 기획서의 분량도 어마무시하고 게임의 규모도 굉장히 큽니다\n하지만 잠정중단되어있는 프로젝트입니다\n장기 프로젝트를 오랫동안 하다보니 하나만 막혀도 모든 진척이 막혀버렸고\n더이상 이어나가기 힘들어 잠시 내려놓고 작은 게임들을 출시하게 되었습니다",
     "game": "soul",
-    "example": true
-  },
-  {
-    "date": "2026-10-03",
-    "type": "그림",
-    "body": "세로로 긴 그림의 캡션 예시. 화면보다 긴 그림은 화면 높이에 맞춰 줄여서 보여줘요.",
-    "image": "assets/examples/drawing-tall.svg",
     "example": true
   }
 ];
