@@ -28,6 +28,34 @@ window.LAODEER_GAMES = [
     "image": "assets/examples/key-scene.svg",
     "alt": "SOUL 대표 장면"
   },
-  { "id": "coming-1", "title": "Coming Soon..", "status": "공개 예정" },
-  { "id": "coming-2", "title": "Coming Soon..", "status": "공개 예정" }
+  {
+    "id": "itch-io",
+    "title": "Sleeve it!",
+    "intro": "20초 게임잼으로 시작한 카드보관 캐주얼 게임 \"Sleeve it\" 입니다",
+    "status": "출시",
+    "released": "2026년 11월 14일",
+    "platforms": [
+      "PC"
+    ],
+    "stores": [
+      {
+        "label": "itch.io",
+        "url": "https://laodeer.itch.io/sleeve-it"
+      }
+    ],
+    "image": "images/2026/game-itch-io-0t8c.png"
+  },
+  {
+    "id": "under-jacpot",
+    "title": "Coming Soon..",
+    "intro": "카지노를 배경으로 한 1인칭 FPS 로그라이크 \"Under-Jacpot\" 입니다",
+    "status": "개발 중",
+    "released": "미정",
+    "devPeriod": "2026년 11월 25일 ~",
+    "developer": "테스트",
+    "platforms": [
+      "PC"
+    ],
+    "image": "images/2026/game-under-jacpot-uutm.png"
+  }
 ];

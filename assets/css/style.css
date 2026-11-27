@@ -12,16 +12,19 @@
   --green: #06331E;
   --green-deep: #032015;  /* 초록을 더 어둡게: 첫 화면 아래쪽 그늘 */
   --amber: #FDA828;
-  --cream: #FEEFD7;
+  --cream: #F0E5CF;      /* 팀 크림(#FEEFD7)을 한 톤 낮춘 아이보리 */
 
-  --cream-deep: #F6DFB8;
+  --paper: #E6DBC5;      /* 읽는 부분의 종이 */
+  --paper-hi: #EEE5D3;   /* 종이 위의 칸 (팩트 시트, FAQ 등) */
+  --cream-deep: #D9CCB1;
   --ink: var(--green);
   --ink-soft: #4A6152;
   --ink-faint: #8E9A82;
   --line: rgba(6, 51, 30, .16);
   --on-green: var(--cream);
-  --on-green-soft: #B9C9B4;
-  --on-green-line: rgba(254, 239, 215, .16);
+  --on-green-soft: #AFC2AA;
+  --on-green-line: rgba(240, 229, 207, .14);
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.02 0 0 0 0 0.2 0 0 0 0 0.12 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
   --display: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --serif: "Gowun Batang", "Nanum Myeongjo", serif;
@@ -43,8 +46,13 @@ html { -webkit-text-size-adjust: 100%; scroll-padding-top: 1rem; }
 
 body {
   margin: 0;
-  background-color: var(--cream);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.02 0 0 0 0 0.2 0 0 0 0 0.12 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-color: var(--green);
+  background-image:
+    radial-gradient(ellipse 60% 45% at 12% 8%, rgba(46, 125, 82, .38), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 92% 38%, rgba(253, 168, 40, .07), transparent 70%),
+    radial-gradient(ellipse 70% 50% at 30% 85%, rgba(24, 96, 60, .35), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, rgba(2, 22, 14, .45) 100%);
+  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--serif);
   font-size: 1.0625rem;
@@ -66,7 +74,12 @@ p:last-child { margin-bottom: 0; }
 .skip { position: absolute; left: 1rem; top: -3rem; z-index: 80; background: var(--amber); color: var(--green); padding: .4rem .8rem; font-family: var(--display); }
 .skip:focus { top: 1rem; }
 
-.dark { background: var(--green); color: var(--on-green); }
+.dark { background: transparent; color: var(--on-green); }
+
+/* 공기방울 캔버스(fx.js)는 z-index 1. 글과 종이는 그 위(2)에 */
+.bubbles { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
+.page, .hero-text, .hero-cue, .cards, .big-title, .phead-ko, .statement blockquote, .team, .game,
+.press-key, .press-studio p, .ourgames .empty, footer.site > * { position: relative; z-index: 2; }
 
 /* ---------- 머리: 왼쪽 메뉴, 가운데 로고 ---------- */
 
@@ -78,7 +91,9 @@ header.site {
   align-items: center;
   height: var(--head-h);
   padding: 0 2.2rem;
-  background: var(--green);
+  background: rgba(6, 51, 30, .82);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   color: var(--on-green);
   border-bottom: 1px solid var(--on-green-line);
 }
@@ -120,10 +135,8 @@ header.site {
   place-items: center;
   min-height: max(32rem, calc(100svh - var(--head-h)));
   overflow: hidden;
-  background: var(--green);
   color: var(--cream);
   text-align: center;
-  isolation: isolate;
 }
 .hero-bg { position: absolute; inset: -4%; z-index: -2; }
 .hero-bg img {
@@ -262,8 +275,18 @@ header.site {
 
 /* ---------- 본문 틀 (크림) ---------- */
 
-.page { padding: 0 var(--side) 6rem; }
-.recent { padding-top: 4.5rem; }
+.page {
+  width: min(calc(100% - 3rem), calc(var(--wrap) + 7rem));
+  margin: 0 auto 5rem;
+  padding: 3.5rem 3.5rem 5rem;
+  background-color: var(--paper);
+  background-image: var(--noise);
+  border-radius: 22px;
+  box-shadow: 0 0 0 1px rgba(240, 229, 207, .25), 12px 12px 0 rgba(2, 22, 14, .45);
+  color: var(--ink);
+}
+.phead + .page, .press-head + .page { margin-top: 0; }
+.recent { padding-top: 3.5rem; }
 .recent-more { margin-left: calc(var(--margin) + var(--gap)); }
 .btn {
   display: inline-block;
@@ -416,7 +439,7 @@ header.site {
 
 /* ---------- 게임 상세 ---------- */
 
-.stage { padding: 2.6rem var(--side) 4.5rem; background: var(--green); color: var(--on-green); }
+.stage { padding: 2.6rem var(--side) 4.5rem; color: var(--on-green); }
 .back { margin: 0 0 1.4rem; font-family: var(--display); font-size: .9rem; }
 .back a { color: var(--on-green-soft); text-decoration: none; }
 .back a::before { content: "‹ "; }
@@ -447,7 +470,7 @@ header.site {
 .store:hover { background: var(--cream); border-color: var(--cream); }
 .store.ghost { background: transparent; color: var(--cream); border-color: var(--cream); }
 .store.ghost:hover { background: var(--cream); color: var(--green); }
-.game-records { padding-top: 4rem; }
+.game-records { padding-top: 3.5rem; }
 .game-records .filters { margin-top: 0; }
 
 /* ---------- ABOUT ---------- */
@@ -493,7 +516,7 @@ header.site {
 .member-role { margin-top: .3rem; font-size: .85rem; color: var(--on-green-soft); line-height: 1.5; }
 .member-handle { margin-top: .4rem; font-size: .85rem; color: var(--amber); }
 
-.about { padding-top: 4.5rem; }
+.about { padding-top: 3.5rem; }
 .about-intro, .essay, .pad-hint, .pad { margin-left: calc(var(--margin) + var(--gap)); }
 .about-intro { max-width: var(--text); font-size: 1.2rem; line-height: 1.85; }
 .ex-line { margin-top: .6rem; }
@@ -505,7 +528,7 @@ header.site {
 .essay-date .ex { margin-left: .8em; }
 
 .pad-hint { max-width: var(--text); color: var(--ink-soft); margin-bottom: 1.2rem; }
-.pad { max-width: 52rem; border: var(--frame) solid var(--green); border-radius: var(--radius); box-shadow: 8px 8px 0 var(--green); overflow: hidden; background: var(--cream); }
+.pad { max-width: 52rem; border: var(--frame) solid var(--green); border-radius: var(--radius); box-shadow: 8px 8px 0 var(--green); overflow: hidden; background: var(--paper-hi); }
 .pad-tools { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .6rem 1.4rem; padding: .7rem .9rem; background: var(--green); }
 .pad-group { display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; }
 .pad canvas { display: block; width: 100%; aspect-ratio: 16 / 9; touch-action: none; cursor: crosshair; }
@@ -527,15 +550,14 @@ header.site {
   grid-template-columns: minmax(0, 1.4fr) minmax(16rem, 1fr);
   gap: 3rem 4rem;
   padding-top: 4rem;
-  max-width: calc(64rem + 2 * var(--side));
-  margin: 0 auto;
+  width: min(calc(100% - 3rem), 72rem);
 }
 .press-desc h2, .factsheet h2 { margin: 0 0 1rem; font-family: var(--display); font-weight: 900; font-size: 1.4rem; letter-spacing: .02em; }
 .press-desc h3 { margin: 2.4rem 0 1rem; font-family: var(--display); font-weight: 700; font-size: 1.05rem; }
 .press-shots { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
 .press-shots .zoom { width: 100%; }
 .press-shots img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; border: 2px solid var(--green); }
-.factsheet { padding: 1.6rem 1.8rem; border: var(--frame) solid var(--green); border-radius: var(--radius); box-shadow: 8px 8px 0 var(--green); align-self: start; background: #FFF6E4; }
+.factsheet { padding: 1.6rem 1.8rem; border: var(--frame) solid var(--green); border-radius: var(--radius); box-shadow: 8px 8px 0 var(--green); align-self: start; background: var(--paper-hi); }
 .factsheet dl { margin: 0; }
 .factsheet dl div { padding: .65rem 0; border-top: 1px solid var(--line); }
 .factsheet dl div:first-child { border-top: 0; padding-top: 0; }
@@ -556,7 +578,7 @@ header.site {
   padding: 1.3rem 1.6rem;
   border: var(--frame) solid var(--green);
   border-radius: var(--radius);
-  background: #FFF6E4;
+  background: var(--paper-hi);
   box-shadow: 6px 6px 0 var(--green);
   text-decoration: none;
   font-family: var(--display);
@@ -571,7 +593,7 @@ header.site {
 /* ---------- FAQ ---------- */
 
 .faq { max-width: 46rem; margin: 4rem auto 0; display: grid; gap: .9rem; }
-.qa { border: var(--frame) solid var(--green); border-radius: var(--radius); background: #FFF6E4; overflow: hidden; }
+.qa { border: var(--frame) solid var(--green); border-radius: var(--radius); background: var(--paper-hi); overflow: hidden; }
 .qa summary {
   display: flex;
   align-items: center;
@@ -602,7 +624,6 @@ footer.site {
   justify-content: space-between;
   gap: 1rem 2rem;
   padding: 2.2rem 2.2rem 2.6rem;
-  background: var(--green);
   color: var(--on-green-soft);
   border-top: 1px solid var(--on-green-line);
   font-family: var(--display);
@@ -684,7 +705,7 @@ html.viewing, html.menu-open { overflow: hidden; }
 
 /* ---------- 단축키 도움말 ---------- */
 
-.help { width: min(26rem, calc(100vw - 2rem)); padding: 1.6rem 1.8rem; border: var(--frame) solid var(--green); border-radius: var(--radius); background: var(--cream); color: var(--green); box-shadow: 8px 8px 0 var(--amber); }
+.help { width: min(26rem, calc(100vw - 2rem)); padding: 1.6rem 1.8rem; border: var(--frame) solid var(--green); border-radius: var(--radius); background: var(--paper); color: var(--green); box-shadow: 8px 8px 0 var(--amber); }
 .help::backdrop { background: rgba(6, 51, 30, .55); }
 .help h2 { margin: 0 0 1rem; font-family: var(--display); font-weight: 900; font-size: 1.4rem; }
 .help dl { margin: 0 0 1.3rem; }
@@ -766,9 +787,11 @@ kbd { display: inline-block; min-width: 1.7em; padding: 0 .4em; border: 2px soli
   .big-title { margin-bottom: 2.2rem; }
   .phead { padding: 3rem 1rem 2.6rem; }
 
+  .page { width: calc(100% - 1.25rem); padding: 2rem 1.1rem 3rem; border-radius: 16px; margin-bottom: 3rem; box-shadow: 0 0 0 1px rgba(240, 229, 207, .25), 6px 6px 0 rgba(2, 22, 14, .45); }
+  .press-cols { width: calc(100% - 1.25rem); }
   .filters, .empty, .band, .recent-more, .about-intro, .essay, .pad-hint, .pad { margin-left: 0; }
-  .filters { margin-top: 2rem; margin-bottom: 2.2rem; }
-  .recent { padding-top: 3rem; }
+  .filters { margin-top: 1.2rem; margin-bottom: 2.2rem; }
+  .recent, .about, .game-records { padding-top: 2rem; }
 
   .month { width: auto; text-align: left; margin-bottom: 1rem; }
   .month:not(:first-child) { margin-top: 1rem; }
@@ -812,3 +835,7 @@ kbd { display: inline-block; min-width: 1.7em; padding: 0 .4em; border: 2px soli
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* 종이 첫머리의 분류 버튼은 위 여백을 겹치지 않게 */
+.page > .filters:first-child { margin-top: 0; }
+.page > .faq, .page > .socials { margin-top: 0; }

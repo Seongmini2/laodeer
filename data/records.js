@@ -24,72 +24,72 @@
 */
 window.LAODEER_RECORDS = [
   {
-    date: "2026-11-24",
-    type: "그림",
-    body: "그림 캡션 예시. 한두 줄 정도의 짧은 설명이 이 자리에 들어갑니다.",
-    image: "assets/examples/drawing-portrait.svg",
-    game: "soul",
-    example: true
+    "date": "2026-11-24",
+    "type": "그림",
+    "body": "그림 캡션 예시. 한두 줄 정도의 짧은 설명이 이 자리에 들어갑니다.",
+    "image": "assets/examples/drawing-portrait.svg",
+    "game": "soul",
+    "example": true
   },
   {
-    date: "2026-11-21",
-    type: "개발일지",
-    title: "개발일지 제목 예시",
-    body: "그날 작업을 한두 문장으로 적는 자리예요.\n\n- 바꾼 점 첫 번째 예시\n- 바꾼 점 두 번째 예시\n- 바꾼 점 세 번째 예시",
-    image: "assets/examples/screenshot-1.svg",
-    game: "soul",
-    example: true
+    "date": "2026-11-21",
+    "type": "개발일지",
+    "title": "개발일지 제목 예시",
+    "body": "그날 작업을 한두 문장으로 적는 자리예요.\n\n- 바꾼 점 첫 번째 예시\n- 바꾼 점 두 번째 예시\n- 바꾼 점 세 번째 예시",
+    "image": "assets/examples/screenshot-1.svg",
+    "game": "soul",
+    "example": true
   },
   {
-    date: "2026-11-18",
-    type: "생각",
-    body: "제목 없이 짧게 남긴 생각의 예시입니다. 이런 기록은 홈에서 끝까지 다 읽을 수 있어요.",
-    example: true
+    "date": "2026-11-18",
+    "type": "생각",
+    "body": "제목 없이 짧게 남긴 생각의 예시입니다. 이런 기록은 홈에서 끝까지 다 읽을 수 있어요.",
+    "example": true
   },
   {
-    date: "2026-11-12",
-    type: "그림",
-    body: "가로로 긴 그림의 캡션 예시.",
-    image: "assets/examples/drawing-landscape.svg",
-    example: true
+    "date": "2026-11-12",
+    "type": "그림",
+    "body": "가로로 긴 그림의 캡션 예시.",
+    "image": "assets/examples/drawing-landscape.svg",
+    "example": true
   },
   {
-    id: "essay-example",
-    date: "2026-11-05",
-    type: "생각",
-    title: "생각 글 제목 예시",
-    body: "홈에서는 이 첫 문장까지만 보여줍니다. 그 뒤 문장부터는 '이어 읽기'를 눌렀을 때 펼쳐져요.\n\n두 번째 문단 예시입니다. 실제 글로 바꾸면 길이에 맞춰 자연스럽게 늘어나요.\n\n세 번째 문단 예시입니다.",
-    example: true
+    "id": "essay-example",
+    "date": "2026-11-05",
+    "type": "생각",
+    "title": "생각 글 제목 예시",
+    "body": "홈에서는 이 첫 문장까지만 보여줍니다. 그 뒤 문장부터는 '이어 읽기'를 눌렀을 때 펼쳐져요.\n\n두 번째 문단 예시입니다. 실제 글로 바꾸면 길이에 맞춰 자연스럽게 늘어나요.\n\n세 번째 문단 예시입니다.",
+    "example": true
   },
   {
-    date: "2026-10-29",
-    type: "개발일지",
-    body: "제목 없이 짧게 남긴 개발일지 예시.\n\n- 바꾼 점 한 줄 예시",
-    game: "soul",
-    example: true
+    "date": "2026-10-29",
+    "type": "개발일지",
+    "body": "제목 없이 짧게 남긴 개발일지 예시.\n\n- 바꾼 점 한 줄 예시",
+    "game": "soul",
+    "example": true
   },
   {
-    date: "2026-10-20",
-    type: "그림",
-    body: "정사각형 그림의 캡션 예시.",
-    image: "assets/examples/drawing-square.svg",
-    game: "soul",
-    example: true
+    "date": "2026-10-20",
+    "type": "그림",
+    "body": "정사각형 그림의 캡션 예시.",
+    "image": "assets/examples/drawing-square.svg",
+    "game": "soul",
+    "example": true
   },
   {
-    date: "2026-10-14",
-    type: "개발일지",
-    title: "스크린샷이 있는 개발일지 예시",
-    body: "작업 메모 예시 문장입니다.\n\n- 바꾼 점 예시\n- 바꾼 점 예시",
-    image: "assets/examples/screenshot-2.svg",
-    game: "soul",
-    example: true
+    "date": "2026-10-14",
+    "type": "개발일지",
+    "title": "스크린샷이 있는 개발일지 예시",
+    "body": "작업 메모 예시 문장입니다.\n\n- 바꾼 점 예시\n- 바꾼 점 예시",
+    "image": "assets/examples/screenshot-2.svg",
+    "game": "soul",
+    "example": true
   },
   {
-    date: "2026-10-03",
-    type: "그림",
-    body: "세로로 긴 그림의 캡션 예시. 화면보다 긴 그림은 화면 높이에 맞춰 줄여서 보여줘요.",
-    image: "assets/examples/drawing-tall.svg",
-    example: true
+    "date": "2026-10-03",
+    "type": "그림",
+    "body": "세로로 긴 그림의 캡션 예시. 화면보다 긴 그림은 화면 높이에 맞춰 줄여서 보여줘요.",
+    "image": "assets/examples/drawing-tall.svg",
+    "example": true
   }
 ];

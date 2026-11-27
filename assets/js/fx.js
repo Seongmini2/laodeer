@@ -77,6 +77,7 @@
       open: function () { tone(392, 0, 0.16, "triangle", 0.08, 784); },
       close: function () { tone(784, 0, 0.14, "triangle", 0.07, 392); },
       page: function () { tone(660, 0, 0.05, "triangle", 0.06); },
+      pop: function () { tone(1250 + Math.random() * 400, 0, 0.07, "sine", 0.07, 420); },
       secret: function () {
         [523, 659, 784, 1047, 784, 1047].forEach(function (f, i) { tone(f, i * 0.09, 0.12, "square", 0.045); });
       }
@@ -410,7 +411,7 @@
     if (!pad) return;
     var canvas = pad.querySelector("canvas");
     var g = canvas.getContext("2d", { willReadFrequently: true });
-    var PAPER = "#FEEFD7";
+    var PAPER = "#EEE5D3";
     var color = "#06331E", size = 4, erasing = false;
     var undo = [], drawing = null, dpr = 1;
 
@@ -532,12 +533,139 @@
     window.addEventListener("scroll", ask, { passive: true });
   }
 
+  /* ---------- 초록 바탕의 공기방울 ----------
+     천천히 떠오르고, 스크롤하면 깊이에 따라 다르게 밀리고, 마우스를 피하고,
+     빈 초록 바탕을 누르면 톡 터진다. 몇 개는 앰버빛(영혼). */
+
+  function initBubbles() {
+    var c = el("canvas", { class: "bubbles", "aria-hidden": "true" });
+    document.body.insertBefore(c, document.body.firstChild);
+    var g = c.getContext("2d");
+    var W = 0, H = 0, dpr = 1, bubbles = [], bursts = [];
+    var mouse = { x: -9999, y: -9999 };
+    var lastScroll = window.scrollY, running = true, raf = 0;
+
+    function size() {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = window.innerWidth; H = window.innerHeight;
+      c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var want = Math.round(Math.max(18, Math.min(56, (W * H) / 26000)));
+      while (bubbles.length < want) bubbles.push(make(false));
+      bubbles.length = want;
+    }
+    function make(fromBottom) {
+      var r = 2.5 + Math.pow(Math.random(), 2.4) * 30;
+      return {
+        x: Math.random() * W,
+        y: fromBottom ? H + r + Math.random() * 80 : Math.random() * H,
+        r: r,
+        depth: 0.35 + (r / 32) * 0.65,             // 큰 방울일수록 가까이 = 스크롤에 더 밀림
+        vy: 0.12 + Math.random() * 0.22 + (1 - r / 32) * 0.18,
+        ph: Math.random() * Math.PI * 2,
+        sw: 0.25 + Math.random() * 0.6,
+        vx: 0,
+        amber: Math.random() < 0.13
+      };
+    }
+    function drawBubble(b) {
+      var a = 0.16 + b.depth * 0.22;
+      var rim = b.amber ? "253, 168, 40" : "150, 214, 172";
+      var grad = g.createRadialGradient(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.1, b.x, b.y, b.r);
+      grad.addColorStop(0, "rgba(" + rim + "," + (a * 0.35) + ")");
+      grad.addColorStop(0.75, "rgba(" + rim + "," + (a * 0.08) + ")");
+      grad.addColorStop(1, "rgba(" + rim + "," + (a * 0.5) + ")");
+      g.fillStyle = grad;
+      g.beginPath(); g.arc(b.x, b.y, b.r, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = "rgba(" + rim + "," + a + ")";
+      g.lineWidth = Math.max(1, b.r * 0.07);
+      g.stroke();
+      if (b.r > 5) { // 반짝이는 하이라이트
+        g.strokeStyle = "rgba(240, 229, 207," + (a + 0.15) + ")";
+        g.lineWidth = Math.max(1, b.r * 0.09);
+        g.beginPath(); g.arc(b.x, b.y, b.r * 0.68, Math.PI * 1.12, Math.PI * 1.42); g.stroke();
+      }
+      if (b.amber) { // 영혼처럼 은은하게 빛남
+        var glow = g.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 2.4);
+        glow.addColorStop(0, "rgba(253, 168, 40, .16)");
+        glow.addColorStop(1, "rgba(253, 168, 40, 0)");
+        g.fillStyle = glow;
+        g.beginPath(); g.arc(b.x, b.y, b.r * 2.4, 0, Math.PI * 2); g.fill();
+      }
+    }
+    function frame() {
+      raf = 0;
+      if (!running) return;
+      var sc = window.scrollY, ds = sc - lastScroll;
+      lastScroll = sc;
+      g.clearRect(0, 0, W, H);
+      for (var i = 0; i < bubbles.length; i++) {
+        var b = bubbles[i];
+        b.ph += 0.012 + b.sw * 0.01;
+        b.y -= b.vy + ds * b.depth * 0.35;
+        b.x += Math.sin(b.ph) * b.sw * 0.35 + b.vx;
+        b.vx *= 0.94;
+        var dx = b.x - mouse.x, dy = b.y - mouse.y, d2 = dx * dx + dy * dy, R = 110 + b.r;
+        if (d2 < R * R && d2 > 0.01) { var d = Math.sqrt(d2), f = (1 - d / R) * 0.9; b.vx += (dx / d) * f; b.y += (dy / d) * f; }
+        if (b.y < -b.r * 2 - 20 || b.y > H + b.r + 160) bubbles[i] = make(b.y < 0);
+        if (b.x < -40) b.x = W + 30; else if (b.x > W + 40) b.x = -30;
+        drawBubble(bubbles[i]);
+      }
+      for (var k = bursts.length - 1; k >= 0; k--) {
+        var p = bursts[k];
+        p.t += 1;
+        var life = p.t / 26;
+        if (life >= 1) { bursts.splice(k, 1); continue; }
+        g.strokeStyle = "rgba(" + p.rim + "," + (0.6 * (1 - life)) + ")";
+        g.lineWidth = 2;
+        g.beginPath(); g.arc(p.x, p.y, p.r * (1 + life * 1.3), 0, Math.PI * 2); g.stroke();
+        g.fillStyle = "rgba(" + p.rim + "," + (0.8 * (1 - life)) + ")";
+        for (var s = 0; s < 8; s++) {
+          var an = (s / 8) * Math.PI * 2 + p.spin, dist = p.r * (0.8 + life * 2.2);
+          g.beginPath(); g.arc(p.x + Math.cos(an) * dist, p.y + Math.sin(an) * dist, Math.max(0.8, 2.6 * (1 - life)), 0, Math.PI * 2); g.fill();
+        }
+      }
+      raf = requestAnimationFrame(frame);
+    }
+
+    size();
+    window.addEventListener("resize", function () { size(); if (reduceMotion) still(); });
+    function still() { g.clearRect(0, 0, W, H); bubbles.forEach(drawBubble); }
+    if (reduceMotion) { still(); return; }
+
+    window.addEventListener("pointermove", function (e) { if (e.pointerType === "mouse") { mouse.x = e.clientX; mouse.y = e.clientY; } }, { passive: true });
+    document.addEventListener("pointerleave", function () { mouse.x = mouse.y = -9999; });
+    document.addEventListener("visibilitychange", function () {
+      running = !document.hidden;
+      lastScroll = window.scrollY;
+      if (running && !raf) raf = requestAnimationFrame(frame);
+    });
+
+    // 빈 초록 바탕을 누르면 가장 가까운 방울이 터진다
+    document.addEventListener("pointerdown", function (e) {
+      if (e.target.closest("a, button, input, textarea, select, label, summary, dialog, .page, .card, .key, .press-key, .member, header.site, canvas:not(.bubbles)")) return;
+      var best = -1, bestD = Infinity;
+      bubbles.forEach(function (b, i) {
+        var d = Math.hypot(b.x - e.clientX, b.y - e.clientY) - b.r;
+        if (d < 14 && d < bestD) { bestD = d; best = i; }
+      });
+      if (best < 0) return;
+      var b = bubbles[best];
+      bursts.push({ x: b.x, y: b.y, r: b.r, t: 0, spin: Math.random() * 6, rim: b.amber ? "253, 168, 40" : "150, 214, 172" });
+      bubbles[best] = make(true);
+      Sound.play("pop");
+    });
+
+    raf = requestAnimationFrame(frame);
+  }
+
   /* ---------- 시작 ---------- */
 
   function boot() {
     bindTilt(document);
     initPad();
     initHero();
+    initBubbles();
   }
   boot();
   document.addEventListener("laodeer:rendered", function () { bindTilt(document); });

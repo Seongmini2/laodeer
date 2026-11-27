@@ -1,6 +1,6 @@
 /* LaoDeer 관리 화면. 사이트와 같은 색과 글꼴을 쓰고, 일하기 편한 밀도로 줄였다. */
 
-body.admin { font-size: 1rem; line-height: 1.6; min-height: 100vh; }
+body.admin { font-size: 1rem; line-height: 1.6; min-height: 100vh; background: var(--paper) var(--noise); background-attachment: scroll; }
 .admin [hidden] { display: none !important; }
 
 .a-top {
@@ -93,7 +93,7 @@ body.admin { font-size: 1rem; line-height: 1.6; min-height: 100vh; }
   padding: .55rem .7rem;
   border: 2px solid var(--green);
   border-radius: 8px;
-  background: #FFF8EA;
+  background: var(--paper-hi);
   color: var(--green);
   font: inherit;
   font-family: var(--serif);
@@ -125,7 +125,7 @@ body.admin { font-size: 1rem; line-height: 1.6; min-height: 100vh; }
   padding: 1rem;
   border: 2px dashed var(--green);
   border-radius: 10px;
-  background: #FFF8EA;
+  background: var(--paper-hi);
   cursor: pointer;
 }
 .a-drop.over { background: var(--cream-deep); border-style: solid; outline: 3px solid var(--amber); }
@@ -151,7 +151,7 @@ body.admin { font-size: 1rem; line-height: 1.6; min-height: 100vh; }
   font-family: var(--display);
   font-size: 1rem;
   line-height: 1.4;
-  background: #FFF8EA;
+  background: var(--paper-hi);
 }
 .a-btn:hover { background: var(--cream-deep); }
 .a-btn.primary { background: var(--amber); box-shadow: 3px 3px 0 var(--green); }
@@ -204,7 +204,7 @@ body.admin { font-size: 1rem; line-height: 1.6; min-height: 100vh; }
 .a-sub { margin: 2.4rem 0 1rem; padding-top: 1.4rem; border-top: 2px solid var(--line); font-family: var(--display); font-size: 1.15rem; font-weight: 900; }
 .a-form h2 + .a-sub { margin-top: 0; padding-top: 0; border-top: 0; }
 .a-rows { display: grid; gap: .6rem; justify-items: start; margin-bottom: 1rem; }
-.a-rowbox { display: flex; align-items: flex-start; gap: .6rem; width: 100%; padding: .7rem; border: 2px solid var(--line); border-radius: 10px; background: #FFF8EA; }
+.a-rowbox { display: flex; align-items: flex-start; gap: .6rem; width: 100%; padding: .7rem; border: 2px solid var(--line); border-radius: 10px; background: var(--paper-hi); }
 .a-rowfields { flex: 1; display: grid; gap: .4rem; min-width: 0; }
 .a-rowbox .a-btn.small { flex: none; }
 .a-photo { flex: none; width: 4.2rem; height: 4.2rem; border-radius: 50%; overflow: hidden; border: 2px dashed var(--green); display: grid; place-items: center; font-family: var(--display); font-size: .8rem; color: var(--ink-soft); background: var(--cream); }
