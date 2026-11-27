@@ -529,7 +529,9 @@
     var essay = STUDIO.essay ? findRecord(STUDIO.essay) : null;
     main.innerHTML =
       '<section class="statement dark">' +
-        (st.text ? '<blockquote><p>' + esc(st.text) + "</p>" + (st.by ? "<footer>" + esc(st.by) + "</footer>" : "") + "</blockquote>" : "") +
+        (st.text ? '<blockquote' + (st.text.length > 120 ? ' class="long"' : "") + ">" +
+          String(st.text).split(/\n\s*\n/).map(function (t) { return t.trim(); }).filter(Boolean).map(function (t) { return "<p>" + esc(t) + "</p>"; }).join("") +
+          (st.by ? "<footer>" + esc(st.by) + "</footer>" : "") + "</blockquote>" : "") +
       "</section>" +
       (team.length ? '<section class="team-sec dark"><h2 class="big-title">LAODEER TEAM</h2><ul class="team">' +
         team.map(function (m) {

@@ -1062,3 +1062,8 @@ kbd { display: inline-block; min-width: 1.7em; padding: 0 .4em; border: 2px soli
 }
 /* 첫 화면 장면은 일렁이는 빛 위에 (장면 색이 물들지 않게) */
 .hero-bg, .hero::after { z-index: 1; }
+
+/* ABOUT 문장이 길면 한 단계 작게, 문단 사이 띄우기 */
+.statement blockquote.long { max-width: 44rem; }
+.statement blockquote.long p { font-size: clamp(1.1rem, 1.7vw, 1.35rem); line-height: 1.8; }
+.statement blockquote p + p { margin-top: 1.2rem; }
