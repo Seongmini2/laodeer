@@ -5,3 +5,7 @@ _backup/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# 폰트 원본 파일은 내 PC에만 (사이트는 assets/fonts/*.woff2 를 씀)
+assets/fonts/*.ttf
+assets/fonts/*.otf
