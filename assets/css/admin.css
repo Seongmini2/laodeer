@@ -230,3 +230,17 @@ body.admin { font-size: 1rem; line-height: 1.6; min-height: 100vh; background: v
 .a-count { font-family: var(--display); font-size: .82rem; color: var(--ink-soft); }
 .a-empty-line { margin-top: 1.2rem; color: var(--ink-soft); }
 @media (max-width: 700px) { .a-tagrow { grid-template-columns: 1fr 1fr; } .a-tagrow input { grid-column: 1 / -1; } }
+
+/* 인게임 이미지 */
+.a-shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: .6rem; padding: .6rem; border: 2px dashed var(--green); border-radius: 10px; background: var(--paper-hi); }
+.a-shots.over { outline: 3px solid var(--amber); border-style: solid; }
+.a-shot { position: relative; border-radius: 8px; overflow: hidden; border: 2px solid var(--green); background: var(--cream-deep); }
+.a-shot img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.a-shot-btns { position: absolute; right: .25rem; top: .25rem; display: flex; gap: .2rem; }
+.a-shot-btns button { width: 1.6rem; height: 1.6rem; border-radius: 50%; background: rgba(6, 51, 30, .8); color: var(--cream); font-size: .7rem; }
+.a-shot-btns button:hover:not(:disabled) { background: var(--amber); color: var(--green); }
+.a-shot-btns button:disabled { opacity: .3; }
+.a-shot-first { position: absolute; left: .3rem; bottom: .3rem; padding: 0 .45rem; border-radius: 999px; background: var(--amber); font-family: var(--display); font-size: .7rem; }
+.a-shot-add { display: grid; place-items: center; align-content: center; gap: .1rem; aspect-ratio: 16 / 9; border: 2px dashed var(--green); border-radius: 8px; font-family: var(--display); font-size: .82rem; color: var(--ink-soft); }
+.a-shot-add b { font-size: 1.4rem; line-height: 1; color: var(--green); }
+.a-shot-add:hover { background: var(--cream-deep); }

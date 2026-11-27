@@ -161,7 +161,7 @@
     return Object.keys(c).sort(function (a, b) { return c[b] - c[a] || a.localeCompare(b, "ko"); });
   }
   function cleanGame(g) {
-    var o = pick(g, ["id", "title", "intro", "status", "released", "devPeriod", "developer", "publisher", "platforms", "stores", "itch", "image", "alt", "example"]);
+    var o = pick(g, ["id", "title", "intro", "status", "released", "devPeriod", "developer", "publisher", "platforms", "stores", "itch", "image", "alt", "screenshots", "example"]);
     if (o.platforms) o.platforms = o.platforms.map(function (p) { return p.trim(); }).filter(Boolean);
     if (o.stores) o.stores = o.stores.filter(function (s) { return s.label && s.label.trim(); })
       .map(function (s) { return { label: s.label.trim(), url: (s.url || "").trim() || "#" }; });
@@ -665,6 +665,7 @@
       id: g.id || "", title: g.title || "", intro: g.intro || "", released: g.released || "",
       status: g.status || "개발 중", devPeriod: g.devPeriod || "", developer: g.developer || "", publisher: g.publisher || "",
       itch: g.itch || "",
+      shots: (g.screenshots || []).map(function (src) { return { src: src, _file: null, _blob: "" }; }),
       platforms: (g.platforms || []).join(", "), stores: (g.stores || []).map(function (s) { return { label: s.label, url: s.url }; }),
       image: g.image || "", alt: g.alt || "", example: !!g.example, _idTouched: !!g.id,
       _file: null, _blob: "", _remove: false
@@ -745,6 +746,8 @@
           }).join("") +
           '<button type="button" class="a-btn small" data-add-store>스토어 추가</button></div></div>' +
         '<div class="a-field"><span>대표 장면 <small>게임 페이지 맨 위와 목록에 쓰여요</small></span>' + dropZone("game-drop", d, "가로로 긴 이미지가 잘 어울려요.") + "</div>" +
+        '<div class="a-field"><span>인게임 이미지 <small>게임 페이지 오른쪽 갤러리와 프레스 킷에 쓰여요. 여러 장을 한꺼번에 끌어다 놓을 수 있어요.</small></span>' +
+          '<div class="a-shots" id="game-shots"></div></div>' +
         '<label class="a-field"><span>대표 장면 설명</span><input type="text" name="alt" value="' + esc(d.alt) + '"></label>' +
         (d.example ? '<label class="a-check"><input type="checkbox" name="example" checked> 예시 표시 유지 <small>실제 게임이면 체크를 풀어주세요</small></label>' : "") +
         '<p class="a-error" id="game-error" role="alert"></p>' +
@@ -782,6 +785,7 @@
       if (e.target.closest('[data-act="delete"]')) deleteGame();
     });
     form.addEventListener("submit", function (e) { e.preventDefault(); saveGame(); });
+    bindShotEditor();
     renderGamePreview();
   }
   function readGameForm() {
@@ -800,6 +804,7 @@
     return cleanGame({
       id: d.id, title: d.title, intro: d.intro, released: d.released, status: d.status,
       devPeriod: d.devPeriod, developer: d.developer, publisher: d.publisher, itch: d.itch,
+      screenshots: d.shots.map(function (x) { return x.src; }).filter(function (x) { return x && !/^blob:/.test(x); }),
       platforms: d.platforms.split(","), stores: d.stores, image: d.image, alt: d.alt, example: d.example
     });
   }
@@ -824,6 +829,50 @@
       "</div>";
   }
 
+  function bindShotEditor() {
+    var box = $("#game-shots"), d = S.game.draft;
+    if (!box || !d) return;
+    function paint() {
+      box.innerHTML = d.shots.map(function (x, i) {
+        return '<div class="a-shot"><img alt="" data-shot-img="' + i + '">' +
+          '<span class="a-shot-btns">' +
+            '<button type="button" data-shot-move="-1" data-i="' + i + '" ' + (i === 0 ? "disabled" : "") + ' aria-label="앞으로">◀</button>' +
+            '<button type="button" data-shot-move="1" data-i="' + i + '" ' + (i === d.shots.length - 1 ? "disabled" : "") + ' aria-label="뒤로">▶</button>' +
+            '<button type="button" data-shot-rm="' + i + '" aria-label="빼기">×</button>' +
+          "</span>" + (i === 0 ? '<span class="a-shot-first">첫 화면</span>' : "") + "</div>";
+      }).join("") +
+        '<button type="button" class="a-shot-add" id="shot-add"><b>+</b><span>이미지 추가</span></button>' +
+        '<input type="file" accept="image/*" multiple hidden id="shot-input">';
+      d.shots.forEach(function (x, i) {
+        var im = box.querySelector('[data-shot-img="' + i + '"]');
+        (x._blob ? Promise.resolve(x._blob) : imgURL(x.src)).then(function (u) { im.src = u; });
+      });
+    }
+    function addFiles(list) {
+      var files = [].slice.call(list).filter(function (f) { return /^image\//.test(f.type); });
+      if (!files.length) return toast("이미지 파일만 넣을 수 있어요.");
+      readGameForm();
+      files.forEach(function (f) { d.shots.push({ src: "", _file: f, _blob: URL.createObjectURL(f) }); });
+      S.game.dirty = true; paint(); renderGamePreviewSoon();
+    }
+    box.addEventListener("click", function (e) {
+      if (e.target.closest("#shot-add")) return $("#shot-input").click();
+      var rm = e.target.closest("[data-shot-rm]");
+      if (rm) { d.shots.splice(+rm.dataset.shotRm, 1); S.game.dirty = true; paint(); renderGamePreviewSoon(); return; }
+      var mv = e.target.closest("[data-shot-move]");
+      if (mv) {
+        var i = +mv.dataset.i, j = i + (+mv.dataset.shotMove), t = d.shots[i];
+        d.shots[i] = d.shots[j]; d.shots[j] = t;
+        S.game.dirty = true; paint(); renderGamePreviewSoon();
+      }
+    });
+    box.addEventListener("change", function (e) { if (e.target.id === "shot-input") { addFiles(e.target.files); e.target.value = ""; } });
+    box.addEventListener("dragover", function (e) { e.preventDefault(); box.classList.add("over"); });
+    box.addEventListener("dragleave", function () { box.classList.remove("over"); });
+    box.addEventListener("drop", function (e) { e.preventDefault(); box.classList.remove("over"); addFiles(e.dataTransfer.files); });
+    paint();
+  }
+
   async function saveGame() {
     readGameForm();
     var d = S.game.draft, err = $("#game-error"), problems = [];
@@ -836,6 +885,9 @@
     err.textContent = "";
     try {
       if (d._file) d.image = await storeImage(d._file, today(), "game-" + d.id);
+      for (var si = 0; si < d.shots.length; si++) {
+        if (d.shots[si]._file) { d.shots[si].src = await storeImage(d.shots[si]._file, today(), "shot-" + d.id); d.shots[si]._file = null; }
+      }
       if (d._remove) { d.image = ""; }
       var g = gameFromDraft(d);
       var oldId = S.game.sel ? S.game.sel.id : null;

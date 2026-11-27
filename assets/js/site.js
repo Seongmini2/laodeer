@@ -417,6 +417,44 @@
       (GAMES.length ? gameCards(GAMES, { eager: true, status: true }) : '<p class="empty">아직 등록한 게임이 없어요.</p>') + "</section>";
   }
 
+  /* 인게임 스크린샷: 큰 화면 한 장 + 썸네일. 썸네일을 누르면 큰 화면이 바뀌고, 큰 화면을 누르면 크게 보기 */
+  function shotsHTML(g, shots) {
+    if (!shots.length) return "";
+    return '<div class="shots" aria-label="' + esc(g.title) + ' 인게임 이미지">' +
+      '<figure class="shot-main">' + zoomable(shots[0], g.title + " 인게임 이미지 1", g.title, true) +
+        (shots.length > 1 ? '<button type="button" class="shot-nav prev" data-step="-1" aria-label="이전 이미지">‹</button>' +
+          '<button type="button" class="shot-nav next" data-step="1" aria-label="다음 이미지">›</button>' +
+          '<span class="shot-count" aria-live="polite">1 / ' + shots.length + "</span>" : "") +
+      "</figure>" +
+      (shots.length > 1 ? '<div class="shot-thumbs">' + shots.map(function (src, i) {
+        return '<button type="button" class="shot-thumb" data-i="' + i + '" data-src="' + esc(src) + '" aria-label="인게임 이미지 ' + (i + 1) + ' 보기" aria-pressed="' + (i === 0) + '">' + img(src, "", i < 4) + "</button>";
+      }).join("") + "</div>" : "") +
+    "</div>";
+  }
+  function bindShots() {
+    var box = document.querySelector(".shots");
+    if (!box) return;
+    var thumbs = [].slice.call(box.querySelectorAll(".shot-thumb"));
+    var main = box.querySelector(".shot-main .zoom"), pic = main.querySelector("img"), count = box.querySelector(".shot-count");
+    var cur = 0;
+    function show(i) {
+      if (!thumbs.length) return;
+      cur = (i + thumbs.length) % thumbs.length;
+      var src = thumbs[cur].dataset.src;
+      pic.src = src; main.dataset.src = src;
+      main.setAttribute("aria-label", "크게 보기: 인게임 이미지 " + (cur + 1));
+      thumbs.forEach(function (t, k) { t.setAttribute("aria-pressed", String(k === cur)); });
+      if (count) count.textContent = (cur + 1) + " / " + thumbs.length;
+      thumbs[cur].scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+    box.addEventListener("click", function (e) {
+      var t = e.target.closest(".shot-thumb");
+      if (t) return show(+t.dataset.i);
+      var n = e.target.closest(".shot-nav");
+      if (n) show(cur + (+n.dataset.step));
+    });
+  }
+
   function initGame(main) {
     var id = new URLSearchParams(location.search).get("id");
     var g = id ? findGame(id) : GAMES.filter(function (x) { return !isSoon(x); })[0];
@@ -427,10 +465,12 @@
     document.title = g.title + " | LaoDeer";
     var facts = [["상태", g.status], ["출시일", g.released], ["개발 기간", g.devPeriod], ["플랫폼", (g.platforms || []).join(", ")]]
       .filter(function (f) { return f[1]; });
+    var shots = (g.screenshots || []).filter(Boolean);
     main.innerHTML =
       '<section class="stage"><div class="game" id="game">' +
         '<p class="back"><a href="games.html">게임 목록</a></p>' +
         (g.image ? '<figure class="key"><span class="tilt soft">' + img(g.image, g.alt || g.title, true) + '<span class="glare" aria-hidden="true"></span></span></figure>' : "") +
+        '<div class="game-body' + (shots.length ? " has-shots" : "") + '">' +
         '<div class="game-text">' +
           "<h1>" + esc(g.title) + exampleMark(g) + "</h1>" +
           (g.intro ? '<p class="intro">' + esc(g.intro) + "</p>" : "") +
@@ -439,6 +479,8 @@
             return '<a class="store" href="' + esc(s.url) + '" rel="noopener">' + esc(s.label) + "</a>";
           }).join("") + '<a class="store ghost" href="presskit.html#' + encodeURIComponent(g.id) + '">프레스 킷</a></p>' +
         "</div>" +
+        shotsHTML(g, shots) +
+        "</div>" +
       "</div></section>" +
       '<section class="page game-records" id="game-records" aria-labelledby="gr-title">' +
         '<h2 class="band" id="gr-title">이 게임을 만들며 남긴 기록</h2>' +
@@ -446,6 +488,7 @@
         '<nav class="tagbar" id="tagbar" aria-label="태그로 보기" hidden></nav>' +
         '<div class="feed" id="feed" aria-live="polite"></div>' +
       "</section>";
+    bindShots();
     var mine = RECORDS.filter(function (r) { return r.game === g.id; });
     setupFilters($("filters"), $("feed"), mine, { game: g, useHash: false, tagBar: $("tagbar"), emptyText: "이 게임에 연결된 기록이 아직 없어요." });
   }
@@ -505,7 +548,8 @@
         ["Developers", g.developer], ["Publisher", g.publisher], ["Development time", g.devPeriod],
         ["Release Date", g.released], ["Platforms", (g.platforms || []).join(", ")], ["Press contact", STUDIO.pressContact]
       ].filter(function (f) { return f[1]; });
-      var shots = RECORDS.filter(function (r) { return r.game === g.id && r.image; }).slice(0, 6);
+      var shots = (g.screenshots || []).filter(Boolean).map(function (src, k) { return { image: src, body: g.title + " 인게임 이미지 " + (k + 1) }; })
+        .concat(RECORDS.filter(function (r) { return r.game === g.id && r.image; })).slice(0, 9);
       return '<section class="press" id="' + esc(g.id) + '" aria-labelledby="press-' + esc(g.id) + '">' +
         '<div class="press-head dark"><h1 class="big-title" id="press-' + esc(g.id) + '">' + esc(g.title) + '</h1><p class="phead-ko">PRESS KIT</p>' +
           (g.image ? '<figure class="press-key">' + zoomable(g.image, g.alt || g.title, g.title, i === 0) + "</figure>" : "") + "</div>" +

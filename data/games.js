@@ -19,9 +19,11 @@ window.LAODEER_GAMES = [
   {
     "id": "itch-io",
     "title": "Sleeve it!",
-    "intro": "20초 게임잼으로 시작한 카드보관 캐주얼 게임 \"Sleeve it\" 입니다",
+    "intro": "당신의 운과 정확도를 시험하세요!",
     "status": "출시",
     "released": "2026년 11월 14일",
+    "developer": "20초 게임잼으로 시작한 카드보관 스피드런 캐주얼 게임",
+    "publisher": "LaoDeer",
     "platforms": [
       "PC"
     ],
@@ -37,23 +39,32 @@ window.LAODEER_GAMES = [
   {
     "id": "soul",
     "title": "SOUL",
-    "intro": "Use elemental souls to solve puzzles and uncover a story told without words in this atmospheric 2.5D adventure.",
+    "intro": "속성을 사용하는 퍼즐 메트로베니아",
     "status": "개발 중",
     "released": "미정",
     "devPeriod": "2025년 말 ~",
-    "developer": "Jeon Seong min",
+    "developer": "속성을 이용한 메트로베니아 2D 액션 게임",
     "publisher": "LaoDeer",
-    "image": "assets/examples/key-scene.svg",
-    "alt": "SOUL 대표 장면"
+    "platforms": [
+      "PC"
+    ],
+    "stores": [
+      {
+        "label": "Steam",
+        "url": "#"
+      }
+    ],
+    "image": "images/2026/game-soul-c408.png"
   },
   {
     "id": "under-jacpot",
     "title": "Under-Jacpot",
-    "intro": "카지노를 배경으로 한 1인칭 FPS 로그라이크 \"Under-Jacpot\" 입니다",
+    "intro": "카지노에서 끝없이 몰려오는 적을 상대하세요!",
     "status": "개발 중",
     "released": "미정",
     "devPeriod": "2026년 11월 25일 ~",
-    "developer": "테스트",
+    "developer": "카지노를 배경으로 한 1인칭 FPS 로그라이크 \"Under-Jacpot\"",
+    "publisher": "LaoDeer",
     "platforms": [
       "PC"
     ],

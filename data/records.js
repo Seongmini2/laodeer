@@ -24,18 +24,38 @@
 */
 window.LAODEER_RECORDS = [
   {
-    "date": "2026-11-24",
+    "date": "2026-11-27",
     "type": "그림",
-    "body": "그림 캡션 예시. 한두 줄 정도의 짧은 설명이 이 자리에 들어갑니다.",
-    "image": "assets/examples/drawing-portrait.svg",
-    "game": "soul",
-    "example": true
+    "tags": [
+      "Under_Jacpot"
+    ],
+    "title": "카지노 딜러 3D 모델",
+    "body": "카지노 딜러의 3D 기초 모델",
+    "image": "images/2026/2026-11-27-zp72.png",
+    "alt": "딜러의 3D 모델",
+    "game": "under-jacpot"
   },
   {
-    "date": "2026-11-18",
-    "type": "생각",
-    "body": "제목 없이 짧게 남긴 생각의 예시입니다. 이런 기록은 홈에서 끝까지 다 읽을 수 있어요.",
-    "example": true
+    "date": "2026-11-26",
+    "type": "개발일지",
+    "tags": [
+      "Sleeve it"
+    ],
+    "title": "\"Sleeve it\" 스프라이트 시트",
+    "body": "Sleeve it 스프라이트 시트입니다\n사용 프로그램 : Aseprite",
+    "image": "images/2026/2026-11-26-hraf.png",
+    "alt": "모든 아트는 수작업으로 진행되었습니다",
+    "game": "itch-io"
+  },
+  {
+    "date": "2026-11-23",
+    "type": "그림",
+    "tags": [
+      "픽셀아트"
+    ],
+    "title": "이끼골램",
+    "body": "이끼골램",
+    "image": "images/2026/2026-11-23-bx0u.png"
   },
   {
     "date": "2026-11-12",
@@ -47,25 +67,15 @@ window.LAODEER_RECORDS = [
   {
     "id": "essay-example",
     "date": "2026-11-05",
-    "type": "생각",
+    "type": "개발일지",
     "title": "생각 글 제목 예시",
-    "body": "홈에서는 이 첫 문장까지만 보여줍니다. 그 뒤 문장부터는 '이어 읽기'를 눌렀을 때 펼쳐져요.\n\n두 번째 문단 예시입니다. 실제 글로 바꾸면 길이에 맞춰 자연스럽게 늘어나요.\n\n세 번째 문단 예시입니다.",
-    "example": true
+    "body": "홈에서는 이 첫 문장까지만 보여줍니다. 그 뒤 문장부터는 '이어 읽기'를 눌렀을 때 펼쳐져요.\n\n두 번째 문단 예시입니다. 실제 글로 바꾸면 길이에 맞춰 자연스럽게 늘어나요.\n\n세 번째 문단 예시입니다."
   },
   {
     "date": "2026-10-20",
     "type": "그림",
     "body": "정사각형 그림의 캡션 예시.",
     "image": "assets/examples/drawing-square.svg",
-    "game": "soul",
-    "example": true
-  },
-  {
-    "date": "2026-10-14",
-    "type": "개발일지",
-    "title": "스크린샷이 있는 개발일지 예시",
-    "body": "작업 메모 예시 문장입니다.\n\n- 바꾼 점 예시\n- 바꾼 점 예시",
-    "image": "assets/examples/screenshot-2.svg",
     "game": "soul",
     "example": true
   },

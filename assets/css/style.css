@@ -885,3 +885,70 @@ kbd { display: inline-block; min-width: 1.7em; padding: 0 .4em; border: 2px soli
 .tagbar .tag[aria-pressed="true"] { background: var(--amber); border-style: solid; }
 .tagbar .tag-clear { margin-left: .3rem; text-decoration: underline; text-decoration-color: var(--amber); text-decoration-thickness: 2px; text-underline-offset: .3em; }
 @media (max-width: 760px) { .tagbar { margin: -1.2rem 0 2.2rem; } }
+
+/* ---------- 게임 페이지: 인게임 스크린샷 ---------- */
+
+.game-body.has-shots {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 2.4rem 3.5rem;
+  align-items: start;
+  margin-top: 2.8rem;
+}
+.game-body.has-shots .game-text { margin-top: 0; padding-left: 0; max-width: none; }
+.shots { min-width: 0; }
+.shot-main { position: relative; margin: 0; }
+.shot-main .zoom { width: 100%; }
+.shot-main img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 3px solid var(--cream);
+  border-radius: 12px;
+  box-shadow: 6px 6px 0 var(--amber);
+  background: #0B4129;
+}
+.shot-nav {
+  position: absolute;
+  top: 50%;
+  width: 2.6rem;
+  height: 2.6rem;
+  margin-top: -1.3rem;
+  border-radius: 50%;
+  background: rgba(3, 32, 21, .72);
+  color: var(--cream);
+  font-size: 1.6rem;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity .2s, background .2s;
+}
+.shot-nav.prev { left: .7rem; }
+.shot-nav.next { right: calc(.7rem + 6px); }
+.shot-main:hover .shot-nav, .shot-nav:focus-visible { opacity: 1; }
+.shot-nav:hover { background: var(--amber); color: var(--green); }
+.shot-count {
+  position: absolute;
+  right: calc(.8rem + 6px);
+  bottom: .7rem;
+  padding: .1rem .6rem;
+  border-radius: 999px;
+  background: rgba(3, 32, 21, .72);
+  color: var(--cream);
+  font-family: var(--display);
+  font-size: .75rem;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.shot-thumbs { display: flex; gap: .55rem; margin-top: 1rem; overflow-x: auto; padding: .2rem .1rem .5rem; scrollbar-width: thin; }
+.shot-thumb { flex: none; width: 6.4rem; border-radius: 8px; border: 2px solid transparent; opacity: .6; transition: opacity .15s, border-color .15s; }
+.shot-thumb img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; }
+.shot-thumb:hover { opacity: .9; }
+.shot-thumb[aria-pressed="true"] { opacity: 1; border-color: var(--amber); }
+@media (hover: none) { .shot-nav { opacity: 1; } }
+@media (max-width: 1000px) {
+  .game-body.has-shots { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .game-body.has-shots { margin-top: 2rem; gap: 2rem; }
+  .shot-thumb { width: 5.2rem; }
+}
