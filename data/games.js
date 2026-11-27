@@ -120,6 +120,22 @@ window.LAODEER_GAMES = [
         "url": "#"
       }
     ],
-    "image": "images/2026/game-soul-c408.png"
+    "image": "images/2026/game-soul-gu9i.png"
+  },
+  {
+    "id": "galpi",
+    "title": "GALPI",
+    "intro": "단어를 조합해 스킬을 창조하세요!",
+    "status": "개발 중",
+    "released": "미정",
+    "developer": "단어 조합 텍스트 로그라이크",
+    "publisher": "LaoDeer",
+    "platforms": [
+      "PC"
+    ],
+    "image": "images/2026/game-galpi-kqao.png",
+    "screenshots": [
+      "images/2026/shot-galpi-lzsf.png"
+    ]
   }
 ];

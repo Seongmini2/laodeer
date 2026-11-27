@@ -58,6 +58,43 @@ window.LAODEER_RECORDS = [
     "image": "images/2026/2026-11-23-bx0u.png"
   },
   {
+    "date": "2025-06-26",
+    "type": "그림",
+    "tags": [
+      "Soul"
+    ],
+    "title": "메커니즘 시안",
+    "body": "소울 탑승 메커니즘 시안",
+    "image": "images/2025/2025-06-26-scdx.png",
+    "game": "soul"
+  },
+  {
+    "date": "2025-05-27",
+    "type": "그림",
+    "tags": [
+      "Soul"
+    ],
+    "title": "맵(연구소)",
+    "body": "연구실 스케치",
+    "image": "images/2025/2025-05-27-oy4r.jpg",
+    "game": "soul"
+  },
+  {
+    "date": "2025-04-14",
+    "type": "그림",
+    "body": "소울 - NPC 디자인",
+    "image": "images/2026/2026-11-27-2fra.png",
+    "game": "soul"
+  },
+  {
+    "date": "2025-03-04",
+    "type": "그림",
+    "title": "소울_캐릭터",
+    "body": "주인공",
+    "image": "images/2025/2025-03-04-a4vd.png",
+    "game": "soul"
+  },
+  {
     "date": "2024-01-10",
     "type": "생각",
     "tags": [
