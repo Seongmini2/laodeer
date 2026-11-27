@@ -454,7 +454,8 @@
       stage.classList.toggle("is-video", !!id);
       stage.innerHTML = id
         ? '<button type="button" class="yt-facade" data-yt="' + id + '" aria-label="영상 재생: ' + esc(g.title) + '">' +
-            '<img src="' + ytThumb(id) + '" alt="" decoding="async"' + (first ? ' fetchpriority="high"' : "") + '><span class="yt-play" aria-hidden="true"></span></button>'
+            '<img src="' + ytThumb(id) + '" alt="" decoding="async"' + (first ? ' fetchpriority="high"' : "") + '><span class="yt-play" aria-hidden="true"></span>' +
+            (location.protocol === "file:" ? '<span class="yt-note">내 PC에서 열어서 유튜브 새 탭으로 재생돼요</span>' : "") + "</button>"
         : zoomable(src, g.title + " 인게임 이미지 " + (i + 1), g.title, !!first);
     }
     function show(i) {
@@ -467,6 +468,10 @@
     }
     box.addEventListener("click", function (e) {
       var f = e.target.closest(".yt-facade");
+      if (f && location.protocol === "file:") {
+        window.open("https://www.youtube.com/watch?v=" + f.dataset.yt, "_blank", "noopener");
+        return;
+      }
       if (f) {
         stage.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + f.dataset.yt + '?autoplay=1&rel=0&playsinline=1" title="' + esc(g.title) + ' 영상" ' +
           'allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';

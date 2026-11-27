@@ -996,3 +996,4 @@ kbd { display: inline-block; min-width: 1.7em; padding: 0 .4em; border: 2px soli
   .game-body.has-shots { margin-top: 2rem; gap: 2rem; }
   .shot-thumb { width: 5.2rem; }
 }
+.yt-note { position: absolute; left: 50%; bottom: .9rem; transform: translateX(-50%); padding: .2rem .8rem; border-radius: 999px; background: rgba(3, 32, 21, .8); color: var(--cream); font-family: var(--display); font-size: .75rem; white-space: nowrap; }
