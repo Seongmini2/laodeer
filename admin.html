@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>관리 | LaoDeer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@200;300&family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body data-page="admin" class="admin">
+  <header class="a-top">
+    <a class="a-mark" href="index.html" target="_blank" rel="noopener">LaoDeer <small>관리</small></a>
+    <nav class="a-tabs" role="tablist" aria-label="관리할 것">
+      <button type="button" role="tab" data-tab="records" aria-selected="true">기록</button>
+      <button type="button" role="tab" data-tab="games" aria-selected="false">게임</button>
+      <button type="button" role="tab" data-tab="about" aria-selected="false">스튜디오</button>
+    </nav>
+    <div class="a-status">
+      <span id="folder-name" class="a-folder">폴더를 열지 않았어요</span>
+      <button type="button" class="chip" id="publish-help">사이트에 올리는 법</button>
+    </div>
+  </header>
+
+  <!-- 처음: 폴더 열기 -->
+  <section class="a-gate" id="gate">
+    <div class="a-gate-card">
+      <h1>작업 폴더를 열어주세요</h1>
+      <p>이 사이트 파일이 들어 있는 <b>laoDeer_web</b> 폴더를 고르면, 여기서 쓴 글과 그림이 그 폴더에 바로 저장돼요. 한 번 고르면 다음부터는 버튼 한 번으로 열려요.</p>
+      <p class="a-gate-actions">
+        <button type="button" class="a-btn primary" id="open-folder">폴더 열기</button>
+        <button type="button" class="a-btn" id="reopen-folder" hidden>지난번 폴더 다시 열기</button>
+      </p>
+      <p class="a-note" id="gate-note"></p>
+    </div>
+  </section>
+
+  <!-- 작업 화면 -->
+  <main class="a-main" id="workspace" hidden>
+    <section class="a-pane" data-pane="records" role="tabpanel">
+      <aside class="a-list">
+        <div class="a-list-head">
+          <button type="button" class="a-btn primary wide" data-new="record">새 기록 쓰기</button>
+          <input type="search" id="rec-search" placeholder="기록 찾기" aria-label="기록 찾기">
+          <div class="a-seg" id="rec-filter" role="group" aria-label="분류로 보기">
+            <button type="button" data-f="" aria-pressed="true">전체</button>
+            <button type="button" data-f="개발일지" aria-pressed="false">개발일지</button>
+            <button type="button" data-f="생각" aria-pressed="false">생각</button>
+            <button type="button" data-f="그림" aria-pressed="false">그림</button>
+          </div>
+        </div>
+        <ul class="a-items" id="rec-list"></ul>
+        <div class="a-list-foot">
+          <button type="button" class="a-link" id="clear-examples">예시 자료 한 번에 지우기</button>
+        </div>
+      </aside>
+      <div class="a-editor" id="rec-editor"></div>
+      <div class="a-preview">
+        <p class="a-preview-label">미리보기</p>
+        <div class="a-paper"><div class="feed" id="rec-preview"></div></div>
+      </div>
+    </section>
+
+    <section class="a-pane" data-pane="games" role="tabpanel" hidden>
+      <aside class="a-list">
+        <div class="a-list-head">
+          <button type="button" class="a-btn primary wide" data-new="game">새 게임 추가</button>
+          <p class="a-hint">목록 순서가 게임 페이지 순서예요. 맨 위 게임이 크게 보여요.</p>
+        </div>
+        <ul class="a-items" id="game-list"></ul>
+      </aside>
+      <div class="a-editor" id="game-editor"></div>
+      <div class="a-preview">
+        <p class="a-preview-label">미리보기</p>
+        <div class="a-paper green" id="game-preview"></div>
+      </div>
+    </section>
+
+    <section class="a-pane" data-pane="about" role="tabpanel" hidden>
+      <div class="a-editor solo" id="about-editor"></div>
+    </section>
+  </main>
+
+  <dialog class="help" id="publish-dialog" aria-labelledby="pub-title">
+    <h2 id="pub-title">사이트에 올리는 법</h2>
+    <p>여기서 저장하면 내 PC의 폴더가 바뀌어요. 인터넷 사이트에 반영하려면 한 번 더 올려야 해요.</p>
+    <ol class="a-steps">
+      <li><b>GitHub Desktop</b>을 열어요.</li>
+      <li>왼쪽에 바뀐 파일 목록이 보여요. 아래 칸에 "새 기록" 처럼 짧게 적고 <b>Commit to main</b>을 눌러요.</li>
+      <li>위쪽 <b>Push origin</b>을 누르면 1~2분 뒤 사이트에 반영돼요.</li>
+    </ol>
+    <p class="a-note">처음 한 번 설정하는 방법은 README.md의 "사이트 공개하기"에 있어요.</p>
+    <form method="dialog"><button class="chip">닫기</button></form>
+  </dialog>
+
+  <div class="toast" id="a-toast" role="status" aria-live="polite"></div>
+
+  <script>window.LAODEER_GAMES = []; window.LAODEER_RECORDS = [];</script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

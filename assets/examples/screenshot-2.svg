@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <pattern id="h" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+      <line x1="0" y1="0" x2="0" y2="22" stroke="#EBCC9A" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="#F6DFB8"/>
+  <rect width="100%" height="100%" fill="url(#h)"/>
+  <rect x='1140' y='60' width='400' height='780' fill='#E5C48F'/>
+  <g font-family="sans-serif" text-anchor="middle" fill="#5A6B52">
+    <text x="50%" y="49%" font-size="72">예시 스크린샷 16:9</text>
+    <text x="50%" y="56%" font-size="40">실제 이미지로 교체하세요</text>
+  </g>
+</svg>

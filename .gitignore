@@ -1,0 +1,7 @@
+# 관리 화면이 저장할 때 남기는 이전 파일 (내 PC에만 보관)
+_backup/
+
+# 운영체제가 만드는 파일
+.DS_Store
+Thumbs.db
+desktop.ini

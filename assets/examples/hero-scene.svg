@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="38%" r="40%"><stop offset="0" stop-color="#3C6E52"/><stop offset="1" stop-color="#06331E" stop-opacity="0"/></radialGradient>
+    <pattern id="h" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><line x1="0" y1="0" x2="0" y2="26" stroke="#0B4129" stroke-width="2"/></pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="#04281A"/>
+  <rect width="100%" height="100%" fill="url(#h)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+  <circle cx="960" cy="380" r="46" fill="none" stroke="#CFE0C8" stroke-width="8" opacity=".7"/>
+  <path d="M0 860 Q480 760 960 820 T1920 790 V1080 H0Z" fill="#0A3A25"/>
+  <g fill="#FDA828" opacity=".75"><circle cx="420" cy="700" r="9"/><circle cx="452" cy="700" r="9"/><circle cx="1500" cy="640" r="7"/></g>
+  <g font-family="sans-serif" text-anchor="middle" fill="#8FAE96">
+    <text x="50%" y="88%" font-size="34">예시 첫 화면 장면, 실제 게임 장면으로 교체하세요</text>
+  </g>
+</svg>
