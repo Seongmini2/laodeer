@@ -144,7 +144,22 @@
     });
     return out;
   }
-  function cleanRecord(r) { return pick(r, ["id", "date", "type", "title", "body", "image", "alt", "game", "example"]); }
+  function cleanRecord(r) { return pick(r, ["id", "date", "type", "tags", "title", "body", "image", "alt", "game", "example"]); }
+
+  /* ---------- 태그 도구 ---------- */
+
+  function normTag(t) {
+    return String(t || "").replace(/^#+/, "").replace(/[,#]/g, " ").replace(/\s+/g, " ").trim().slice(0, 24);
+  }
+  function tagCounts() {
+    var c = {};
+    S.records.forEach(function (r) { (r.tags || []).forEach(function (t) { c[t] = (c[t] || 0) + 1; }); });
+    return c;
+  }
+  function allTags() {
+    var c = tagCounts();
+    return Object.keys(c).sort(function (a, b) { return c[b] - c[a] || a.localeCompare(b, "ko"); });
+  }
   function cleanGame(g) {
     var o = pick(g, ["id", "title", "intro", "status", "released", "devPeriod", "developer", "publisher", "platforms", "stores", "itch", "image", "alt", "example"]);
     if (o.platforms) o.platforms = o.platforms.map(function (p) { return p.trim(); }).filter(Boolean);
@@ -296,6 +311,7 @@
     $$(".a-tabs button").forEach(function (b) { b.setAttribute("aria-selected", b.dataset.tab === t ? "true" : "false"); });
     $$(".a-pane").forEach(function (p) { p.hidden = p.dataset.pane !== t; });
     if (t === "about") renderStudio();
+    if (t === "tags") renderTagManager();
   }
   function renderAll() { renderRecList(); renderRecEditor(); renderGameList(); renderGameEditor(); renderStudio(); }
 
@@ -319,6 +335,7 @@
     return {
       id: r.id || "", date: r.date || today(), type: r.type || "", title: r.title || "", body: r.body || "",
       image: r.image || "", alt: r.alt || "", game: r.game || "", example: !!r.example,
+      tags: (r.tags || []).slice(),
       _file: null, _blob: "", _remove: false
     };
   }
@@ -328,14 +345,16 @@
     var items = S.records.filter(function (r) {
       if (f && r.type !== f) return false;
       if (!q) return true;
-      return ((r.title || "") + " " + r.body + " " + r.date).toLowerCase().indexOf(q) >= 0;
+      return ((r.title || "") + " " + r.body + " " + r.date + " " + (r.tags || []).map(function (t) { return "#" + t; }).join(" ")).toLowerCase().indexOf(q) >= 0;
     });
     $("#rec-list").innerHTML = items.length ? items.map(function (r) {
       var label = r.title || r.body.split("\n")[0];
       return '<li><button type="button" class="a-item' + (r === S.rec.sel ? " on" : "") + '" data-i="' + S.records.indexOf(r) + '">' +
         '<span class="a-item-top"><time>' + esc(r.date) + '</time><span class="kind">' + esc(r.type) + "</span>" +
         (r.image ? '<span class="a-tag">이미지</span>' : "") + (r.example ? '<span class="ex">예시</span>' : "") + "</span>" +
-        '<span class="a-item-text">' + esc(label.length > 44 ? label.slice(0, 44) + "…" : label) + "</span></button></li>";
+        '<span class="a-item-text">' + esc(label.length > 44 ? label.slice(0, 44) + "…" : label) + "</span>" +
+        ((r.tags || []).length ? '<span class="a-item-tags">' + r.tags.map(function (t) { return "#" + esc(t); }).join(" ") + "</span>" : "") +
+        "</button></li>";
     }).join("") : '<li class="a-hint pad">' + (S.records.length ? "맞는 기록이 없어요." : "아직 기록이 없어요. 위의 새 기록 쓰기로 시작하세요.") + "</li>";
     var ex = S.records.filter(function (r) { return r.example; }).length + S.games.filter(function (g) { return g.example; }).length +
       ["socials", "faq"].reduce(function (n, k) { return n + ((S.studio || {})[k] || []).filter(function (x) { return x.example; }).length; }, 0);
@@ -423,6 +442,10 @@
             return '<label><input type="radio" name="type" value="' + t + '"' + (d.type === t ? " checked" : "") + "><span>" + t + "</span></label>";
           }).join("") +
         "</div></fieldset>" +
+        '<div class="a-field"><span>태그 <small>Enter나 쉼표로 추가해요. 없던 태그는 새로 만들어져요.</small></span>' +
+          '<div class="a-tags" id="rec-tags"></div>' +
+          '<div class="a-tag-suggest" id="rec-tag-suggest"></div>' +
+        "</div>" +
         '<label class="a-field"><span>날짜 <em>필수</em></span><input type="date" name="date" value="' + esc(d.date) + '"></label>' +
         '<label class="a-field"><span>제목 <small data-hint="title">' + esc(h.title) + '</small></span><input type="text" name="title" value="' + esc(d.title) + '" autocomplete="off"></label>' +
         '<label class="a-field"><span>본문 <em>필수</em> <small data-hint="body">' + esc(h.body) + '</small></span><textarea name="body" rows="9">' + esc(d.body) + "</textarea></label>" +
@@ -458,6 +481,7 @@
       }
     });
     form.addEventListener("submit", function (e) { e.preventDefault(); saveRecord(); });
+    bindTagEditor();
     form.addEventListener("click", function (e) {
       var b = e.target.closest("[data-act]");
       if (!b) return;
@@ -508,8 +532,56 @@
     window.LaoDeer.renderFeed(box, [r], {});
   }
 
+  function bindTagEditor() {
+    var box = $("#rec-tags"), sug = $("#rec-tag-suggest"), d = S.rec.draft;
+    if (!box || !d) return;
+    function paint(keepFocus) {
+      box.innerHTML = d.tags.map(function (t, i) {
+        return '<span class="a-chip">#' + esc(t) + '<button type="button" data-rm-tag="' + i + '" aria-label="' + esc(t) + ' 태그 빼기">×</button></span>';
+      }).join("") + '<input type="text" id="tag-input" placeholder="' + (d.tags.length ? "태그 더하기" : "예: 버그수정, 아트, 사운드") + '" aria-label="태그 입력" autocomplete="off">';
+      var rest = allTags().filter(function (t) { return d.tags.indexOf(t) < 0; }).slice(0, 14);
+      sug.innerHTML = rest.length ? '<span class="a-hint">쓰던 태그</span>' + rest.map(function (t) {
+        return '<button type="button" class="a-chip ghost" data-add-tag="' + esc(t) + '">#' + esc(t) + "</button>";
+      }).join("") : "";
+      if (keepFocus) $("#tag-input").focus();
+    }
+    function add(raw) {
+      String(raw).split(",").map(normTag).filter(Boolean).forEach(function (t) {
+        if (d.tags.indexOf(t) < 0) d.tags.push(t);
+      });
+    }
+    box.addEventListener("keydown", function (e) {
+      var inp = e.target;
+      if (inp.id !== "tag-input") return;
+      if (e.key === "Enter" || e.key === "," || (e.key === "Tab" && inp.value.trim())) {
+        if (!inp.value.trim()) { if (e.key === "Enter") e.preventDefault(); return; }
+        e.preventDefault();
+        add(inp.value); markRec(); paint(true);
+      } else if (e.key === "Backspace" && !inp.value && d.tags.length) {
+        d.tags.pop(); markRec(); paint(true);
+      }
+    });
+    box.addEventListener("click", function (e) {
+      var rm = e.target.closest("[data-rm-tag]");
+      if (rm) { d.tags.splice(+rm.dataset.rmTag, 1); markRec(); paint(true); return; }
+      if (e.target === box) $("#tag-input").focus();
+    });
+    sug.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-add-tag]");
+      if (b) { add(b.dataset.addTag); markRec(); paint(true); }
+    });
+    paint(false);
+  }
+  function flushTagInput() {
+    var inp = $("#tag-input"), d = S.rec.draft;
+    if (!inp || !d || !inp.value.trim()) return;
+    inp.value.split(",").map(normTag).filter(Boolean).forEach(function (t) { if (d.tags.indexOf(t) < 0) d.tags.push(t); });
+    inp.value = "";
+  }
+
   async function saveRecord() {
     readRecFormSafe();
+    flushTagInput();
     var d = S.rec.draft, err = $("#rec-error");
     var problems = [];
     if (!d.type) problems.push("분류를 골라주세요.");
@@ -969,6 +1041,67 @@
       err.textContent = "저장하지 못했어요. " + (e.message || "");
     }
   }
+
+  /* =====================================================
+     태그 관리: 이름 바꾸기(같은 이름이면 합치기), 지우기
+     ===================================================== */
+
+  function renderTagManager() {
+    var el = $("#tags-editor");
+    var c = tagCounts(), tags = allTags();
+    el.innerHTML =
+      '<div class="a-form">' +
+        "<h2>태그</h2>" +
+        '<p class="a-hint">태그는 기록을 쓸 때 입력하면 새로 만들어지고, 어느 기록에도 안 쓰이면 저절로 사라져요. ' +
+        "여기서는 이미 쓴 태그의 이름을 한꺼번에 바꾸거나 지울 수 있어요. 다른 태그와 같은 이름으로 바꾸면 둘이 합쳐져요.</p>" +
+        (tags.length ? '<ul class="a-taglist">' + tags.map(function (t) {
+          return '<li class="a-tagrow" data-tag="' + esc(t) + '">' +
+            '<span class="a-chip">#' + esc(t) + '</span><span class="a-count">기록 ' + c[t] + "개</span>" +
+            '<input type="text" value="' + esc(t) + '" aria-label="' + esc(t) + ' 새 이름">' +
+            '<button type="button" class="a-btn small" data-tag-act="rename">이름 바꾸기</button>' +
+            '<button type="button" class="a-btn small danger" data-tag-act="delete">지우기</button>' +
+          "</li>";
+        }).join("") + "</ul>" : '<p class="a-empty-line">아직 쓴 태그가 없어요. 기록 탭에서 글을 쓸 때 태그를 붙여보세요.</p>') +
+        '<p class="a-error" id="tags-error" role="alert"></p>' +
+      "</div>";
+    el.querySelectorAll(".a-tagrow input").forEach(function (inp) {
+      inp.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); inp.closest(".a-tagrow").querySelector('[data-tag-act="rename"]').click(); }
+      });
+    });
+  }
+
+  $("#tags-editor").addEventListener("click", async function (e) {
+    var b = e.target.closest("[data-tag-act]");
+    if (!b) return;
+    var row = b.closest(".a-tagrow"), from = row.dataset.tag;
+    var used = S.records.filter(function (r) { return (r.tags || []).indexOf(from) >= 0; });
+    try {
+      if (b.dataset.tagAct === "rename") {
+        var to = normTag(row.querySelector("input").value);
+        if (!to) { $("#tags-error").textContent = "새 이름을 적어주세요."; return; }
+        if (to === from) return;
+        var merging = !!tagCounts()[to];
+        if (merging && !window.confirm("#" + to + " 태그가 이미 있어요. #" + from + "을(를) #" + to + "에 합칠까요?")) return;
+        used.forEach(function (r) {
+          var out = [];
+          r.tags.forEach(function (t) { var n = t === from ? to : t; if (out.indexOf(n) < 0) out.push(n); });
+          r.tags = out;
+        });
+        await saveData("records");
+        toast(merging ? "#" + from + "을(를) #" + to + "에 합쳤어요." : "#" + from + " → #" + to + " 로 바꿨어요. (기록 " + used.length + "개)");
+      } else {
+        if (!window.confirm("#" + from + " 태그를 지울까요?\n기록 " + used.length + "개에서 이 태그만 빠지고, 기록은 그대로 남아요.")) return;
+        used.forEach(function (r) { r.tags = r.tags.filter(function (t) { return t !== from; }); });
+        await saveData("records");
+        toast("#" + from + " 태그를 지웠어요.");
+      }
+      if (S.rec.sel) { S.rec.draft = draftFrom(S.rec.sel); S.rec.dirty = false; }
+      renderTagManager(); renderRecList(); renderRecEditor();
+    } catch (err) {
+      $("#tags-error").textContent = "저장하지 못했어요. " + (err.message || "");
+    }
+  });
 
   /* ---------- 공통 ---------- */
 

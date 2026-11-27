@@ -38,23 +38,6 @@ window.LAODEER_RECORDS = [
     "example": true
   },
   {
-    "date": "2026-11-18",
-    "type": "개발일지",
-    "title": "Sleeve It! v1.2.0 — Collect Cards, Build Combos, Aim for Perfect!",
-    "body": "제목 없이 짧게 남긴 개발일지 예시.\n\n- 바꾼 점 한 줄 예시",
-    "image": "images/2026/2026-11-18-zcum.png",
-    "game": "itch-io"
-  },
-  {
-    "date": "2026-11-16",
-    "type": "개발일지",
-    "title": "Sleeve It! Update — Online Leaderboards Are Here!",
-    "body": "새로운 소식\n\n- **개인 최고 수익 추적:** 최고 수익 기록은 기기에 로컬로 저장됩니다.\n\n- **온라인 순위표:** 점수를 제출하고 다른 플레이어들과 비교해 보세요!\n\n- **전체 화면 버튼:** 플레이어의 요청에 따라 추가되었습니다.",
-    "image": "images/2026/2026-11-16-7w6l.png",
-    "game": "itch-io",
-    "example": true
-  },
-  {
     "date": "2026-11-12",
     "type": "그림",
     "body": "가로로 긴 그림의 캡션 예시.",

@@ -19,6 +19,7 @@
       <button type="button" role="tab" data-tab="records" aria-selected="true">기록</button>
       <button type="button" role="tab" data-tab="games" aria-selected="false">게임</button>
       <button type="button" role="tab" data-tab="about" aria-selected="false">스튜디오</button>
+      <button type="button" role="tab" data-tab="tags" aria-selected="false">태그</button>
     </nav>
     <div class="a-status">
       <span id="folder-name" class="a-folder">폴더를 열지 않았어요</span>
@@ -82,6 +83,10 @@
 
     <section class="a-pane" data-pane="about" role="tabpanel" hidden>
       <div class="a-editor solo" id="about-editor"></div>
+    </section>
+
+    <section class="a-pane" data-pane="tags" role="tabpanel" hidden>
+      <div class="a-editor solo" id="tags-editor"></div>
     </section>
   </main>
 

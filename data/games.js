@@ -31,8 +31,8 @@ window.LAODEER_GAMES = [
         "url": "https://laodeer.itch.io/sleeve-it"
       }
     ],
-    "image": "images/2026/game-itch-io-0t8c.png",
-    "itch": "https://laodeer.itch.io/sleeve-it"
+    "itch": "https://laodeer.itch.io/sleeve-it",
+    "image": "images/2026/game-itch-io-0t8c.png"
   },
   {
     "id": "soul",
@@ -48,7 +48,7 @@ window.LAODEER_GAMES = [
   },
   {
     "id": "under-jacpot",
-    "title": "Coming Soon..",
+    "title": "Under-Jacpot",
     "intro": "카지노를 배경으로 한 1인칭 FPS 로그라이크 \"Under-Jacpot\" 입니다",
     "status": "개발 중",
     "released": "미정",

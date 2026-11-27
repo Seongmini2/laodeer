@@ -864,3 +864,24 @@ kbd { display: inline-block; min-width: 1.7em; padding: 0 .4em; border: 2px soli
 .post-html summary { font-family: var(--display); font-weight: 700; cursor: pointer; }
 .post-html .spoiler { padding: 0 .2rem; border-radius: 4px; background: var(--green); color: transparent; cursor: pointer; transition: color .2s; }
 .post-html .spoiler:hover, .post-html .spoiler:focus { color: var(--cream); }
+
+/* ---------- 태그 ---------- */
+
+.tags { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0 0 .7rem; font-family: var(--display); font-size: .8rem; line-height: 1.4; }
+.tag-link { padding: .15rem .55rem; border: 1.5px solid var(--green); border-radius: 999px; color: var(--green); text-decoration: none; font-weight: 500; }
+.tag-link:hover { background: var(--amber); }
+.tagbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem;
+  margin: -2rem 0 3rem calc(var(--margin) + var(--gap));
+  font-family: var(--display);
+  font-size: .82rem;
+}
+.tagbar .tag { padding: .2rem .7rem; border: 1.5px dashed var(--green); border-radius: 999px; line-height: 1.5; }
+.tagbar .tag small { color: var(--ink-soft); font-size: .72rem; }
+.tagbar .tag:hover { background: var(--paper-hi); }
+.tagbar .tag[aria-pressed="true"] { background: var(--amber); border-style: solid; }
+.tagbar .tag-clear { margin-left: .3rem; text-decoration: underline; text-decoration-color: var(--amber); text-decoration-thickness: 2px; text-underline-offset: .3em; }
+@media (max-width: 760px) { .tagbar { margin: -1.2rem 0 2.2rem; } }

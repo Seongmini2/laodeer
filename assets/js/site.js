@@ -150,6 +150,16 @@
     }
   }
 
+  /* ---------- 태그 ---------- */
+
+  function tagsHTML(r) {
+    var tags = r.tags || [];
+    if (!tags.length) return "";
+    return '<p class="tags">' + tags.map(function (t) {
+      return '<a class="tag-link" href="devlog.html?tag=' + encodeURIComponent(t) + '" data-tag="' + esc(t) + '">#' + esc(t) + "</a>";
+    }).join("") + "</p>";
+  }
+
   /* ---------- itch.io 에서 가져온 글 ---------- */
 
   function zoomifyHTML(h, caption) {
@@ -159,7 +169,7 @@
   }
   function renderItch(r, opts) {
     var dt = parseDate(r.date), rid = "more-" + r._i;
-    var html = "<h3>" + esc(r.title) + "</h3>" +
+    var html = tagsHTML(r) + "<h3>" + esc(r.title) + "</h3>" +
       (r.cover ? '<figure class="shot">' + zoomable(r.cover, r.title, r.title, opts.index === 0 && !opts.lazy) + "</figure>" : "") +
       '<p class="lede itch-lede">' + esc(r.body) + "</p>" +
       (r.html ? '<div class="more post-html" id="' + rid + '" hidden>' + zoomifyHTML(r.html, r.title) + "</div>" : "") +
@@ -215,7 +225,7 @@
     var meta = '<div class="meta"><time datetime="' + esc(r.date) + '">' + dt.m + "월 " + dt.d + "일</time>" +
       '<span class="kind">' + esc(r.type) + "</span>" + exampleMark(r) + "</div>";
 
-    return '<article class="' + cls + '" tabindex="-1"' + (r.id ? ' id="' + esc(r.id) + '"' : "") + '><div class="body">' + html + "</div>" + meta + "</article>";
+    return '<article class="' + cls + '" tabindex="-1"' + (r.id ? ' id="' + esc(r.id) + '"' : "") + '><div class="body">' + tagsHTML(r) + html + "</div>" + meta + "</article>";
   }
 
   function renderFeed(el, list, opts) {
@@ -253,25 +263,72 @@
     }).join("");
 
     var current = "전체";
+    var tagBar = opts.tagBar;
+    var currentTag = opts.useHash ? (new URLSearchParams(location.search).get("tag") || "") : "";
+
+    function counts() {
+      var c = {};
+      source.forEach(function (r) { (r.tags || []).forEach(function (t) { c[t] = (c[t] || 0) + 1; }); });
+      return c;
+    }
+    function drawTagBar() {
+      if (!tagBar) return;
+      var c = counts();
+      var tags = Object.keys(c).sort(function (a, b) { return c[b] - c[a] || a.localeCompare(b, "ko"); });
+      if (currentTag && !c[currentTag]) tags.unshift(currentTag);
+      tagBar.hidden = !tags.length;
+      tagBar.innerHTML = tags.map(function (t) {
+        return '<button type="button" class="tag" data-tag="' + esc(t) + '" aria-pressed="' + (t === currentTag) + '">#' + esc(t) +
+          (c[t] ? " <small>" + c[t] + "</small>" : "") + "</button>";
+      }).join("") + (currentTag ? '<button type="button" class="tag-clear" data-tag="">태그 해제</button>' : "");
+    }
     function draw() {
-      var f = current;
+      var f = current, t = currentTag;
       [].forEach.call(nav.querySelectorAll("button"), function (b) {
         b.setAttribute("aria-pressed", b.dataset.f === f ? "true" : "false");
       });
-      renderFeed(feed, f === "전체" ? source : source.filter(function (r) { return r.type === f; }), opts);
+      drawTagBar();
+      var list = source.filter(function (r) {
+        return (f === "전체" || r.type === f) && (!t || (r.tags || []).indexOf(t) >= 0);
+      });
+      renderFeed(feed, list, t && !list.length ? Object.assign({}, opts, { emptyText: "#" + esc(t) + " 태그가 붙은 기록이 아직 없어요." }) : opts);
+    }
+    function syncUrl() {
+      if (!opts.useHash) return;
+      history.replaceState(null, "", location.pathname +
+        (currentTag ? "?tag=" + encodeURIComponent(currentTag) : "") +
+        (current !== "전체" ? "#" + encodeURIComponent(current) : ""));
     }
     function apply(f, push) {
       if (available.indexOf(f) < 0) f = "전체";
       current = f;
       if (push) transition(draw); else draw();
-      if (push && opts.useHash) {
-        history.replaceState(null, "", f === "전체" ? location.pathname + location.search : "#" + encodeURIComponent(f));
-      }
+      if (push) syncUrl();
+    }
+    function setTag(t) {
+      currentTag = currentTag === t ? "" : t;
+      transition(draw);
+      syncUrl();
     }
     nav.addEventListener("click", function (e) {
       var b = e.target.closest("button");
       if (b) apply(b.dataset.f, true);
     });
+    if (tagBar) {
+      tagBar.addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-tag]");
+        if (b) setTag(b.dataset.tag);
+      });
+      // 기록 안의 #태그를 누르면 페이지를 다시 열지 않고 바로 거름
+      feed.addEventListener("click", function (e) {
+        var a = e.target.closest("a.tag-link");
+        if (!a) return;
+        e.preventDefault();
+        currentTag = "";
+        setTag(a.dataset.tag);
+        tagBar.scrollIntoView({ block: "center", behavior: "smooth" });
+      });
+    }
 
     var hash = opts.useHash ? decodeURIComponent(location.hash.slice(1)) : "";
     if (hash && FILTERS.indexOf(hash) < 0) {
@@ -350,8 +407,9 @@
 
   function initDevlog(main) {
     main.innerHTML = pageHead("DEVLOG", "작업 기록") +
-      '<section class="page"><nav class="filters" id="filters" aria-label="기록 분류"></nav><div class="feed" id="feed" aria-live="polite"></div></section>';
-    setupFilters($("filters"), $("feed"), RECORDS, { useHash: true });
+      '<section class="page"><nav class="filters" id="filters" aria-label="기록 분류"></nav>' +
+      '<nav class="tagbar" id="tagbar" aria-label="태그로 보기" hidden></nav><div class="feed" id="feed" aria-live="polite"></div></section>';
+    setupFilters($("filters"), $("feed"), RECORDS, { useHash: true, tagBar: $("tagbar") });
   }
 
   function initGames(main) {
@@ -385,10 +443,11 @@
       '<section class="page game-records" id="game-records" aria-labelledby="gr-title">' +
         '<h2 class="band" id="gr-title">이 게임을 만들며 남긴 기록</h2>' +
         '<nav class="filters" id="filters" aria-label="기록 분류"></nav>' +
+        '<nav class="tagbar" id="tagbar" aria-label="태그로 보기" hidden></nav>' +
         '<div class="feed" id="feed" aria-live="polite"></div>' +
       "</section>";
     var mine = RECORDS.filter(function (r) { return r.game === g.id; });
-    setupFilters($("filters"), $("feed"), mine, { game: g, useHash: false, emptyText: "이 게임에 연결된 기록이 아직 없어요." });
+    setupFilters($("filters"), $("feed"), mine, { game: g, useHash: false, tagBar: $("tagbar"), emptyText: "이 게임에 연결된 기록이 아직 없어요." });
   }
 
   function initAbout(main) {
@@ -492,7 +551,7 @@
   }
 
   /* 관리 화면 미리보기에서 같은 모양으로 그리기 위해 공개 */
-  window.LaoDeer = { renderRecord: renderRecord, renderFeed: renderFeed, gameCards: gameCards, TYPES: TYPES };
+  window.LaoDeer = { tagsHTML: tagsHTML, renderRecord: renderRecord, renderFeed: renderFeed, gameCards: gameCards, TYPES: TYPES };
 
   var page = document.body.dataset.page;
   var main = $("main");
