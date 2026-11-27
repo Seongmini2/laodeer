@@ -47,6 +47,51 @@ window.LAODEER_GAMES = [
     ]
   },
   {
+    "id": "under-jacpot",
+    "title": "Under-Jacpot",
+    "intro": "카지노에서 끝없이 몰려오는 적을 상대하세요!",
+    "status": "개발 중",
+    "released": "미정",
+    "devPeriod": "2026년 11월 25일 ~",
+    "developer": "카지노를 배경으로 한 1인칭 FPS 로그라이크 \"Under-Jacpot\"",
+    "publisher": "LaoDeer",
+    "platforms": [
+      "PC"
+    ],
+    "image": "images/2026/game-under-jacpot-uutm.png",
+    "screenshots": [
+      "images/2026/shot-under-jacpot-ez6b.png",
+      "images/2026/shot-under-jacpot-gjya.png",
+      "images/2026/shot-under-jacpot-avkm.png",
+      "images/2026/shot-under-jacpot-17i0.png"
+    ]
+  },
+  {
+    "id": "coralvale",
+    "title": "Coralvale",
+    "intro": "하늘을 항해하는 멀티 액션 생존게임",
+    "status": "개발 중",
+    "released": "미정",
+    "developer": "직접 조종하고 새롭게 모험을 떠나며 혼자, 그리고 친구들과 성장하세요!",
+    "publisher": "LaoDeer",
+    "platforms": [
+      "PC"
+    ],
+    "stores": [
+      {
+        "label": "Steam",
+        "url": "#"
+      }
+    ],
+    "image": "images/2026/game-coralvale-qgpa.png",
+    "screenshots": [
+      "images/2026/shot-coralvale-lq9g.png",
+      "images/2026/shot-coralvale-xggk.png",
+      "images/2026/shot-coralvale-9zmv.png",
+      "images/2026/shot-coralvale-6rd8.png"
+    ]
+  },
+  {
     "id": "soul",
     "title": "SOUL",
     "intro": "속성을 사용하는 퍼즐 메트로베니아",
@@ -65,19 +110,5 @@ window.LAODEER_GAMES = [
       }
     ],
     "image": "images/2026/game-soul-c408.png"
-  },
-  {
-    "id": "under-jacpot",
-    "title": "Under-Jacpot",
-    "intro": "카지노에서 끝없이 몰려오는 적을 상대하세요!",
-    "status": "개발 중",
-    "released": "미정",
-    "devPeriod": "2026년 11월 25일 ~",
-    "developer": "카지노를 배경으로 한 1인칭 FPS 로그라이크 \"Under-Jacpot\"",
-    "publisher": "LaoDeer",
-    "platforms": [
-      "PC"
-    ],
-    "image": "images/2026/game-under-jacpot-uutm.png"
   }
 ];
