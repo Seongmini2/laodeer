@@ -24,6 +24,11 @@
   --on-green: var(--cream);
   --on-green-soft: #AFC2AA;
   --on-green-line: rgba(240, 229, 207, .14);
+  /* 초록 바탕 무늬. --pattern 에 셋 중 하나를 넣으면 바뀌어요. */
+  --pattern-moon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cg fill='none' stroke='%23AFC2AA' stroke-opacity='.11' stroke-width='1.2'%3E%3Ccircle cx='14' cy='14' r='5'/%3E%3Ccircle cx='42' cy='42' r='5'/%3E%3C/g%3E%3Cg fill='%23AFC2AA' fill-opacity='.11'%3E%3Cpath d='M14 9a5 5 0 0 0 0 10z'/%3E%3Cpath d='M42 37a5 5 0 0 1 0 10z'/%3E%3C/g%3E%3C/svg%3E");   /* 로고의 반달(◐) */
+  --pattern-diagonal: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M-6 6l12-12M0 24L24 0M18 30l12-12' stroke='%23AFC2AA' stroke-opacity='.09' stroke-width='1.5'/%3E%3C/svg%3E");
+  --pattern-dots: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='11' cy='11' r='1.3' fill='%23AFC2AA' fill-opacity='.2'/%3E%3C/svg%3E");
+  --pattern: var(--pattern-moon);
   --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.02 0 0 0 0 0.2 0 0 0 0 0.12 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
   --display: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
@@ -48,10 +53,12 @@ body {
   margin: 0;
   background-color: var(--green);
   background-image:
+    radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, rgba(2, 22, 14, .5) 100%),
+    var(--pattern),
     radial-gradient(ellipse 60% 45% at 12% 8%, rgba(46, 125, 82, .38), transparent 70%),
     radial-gradient(ellipse 50% 40% at 92% 38%, rgba(253, 168, 40, .07), transparent 70%),
-    radial-gradient(ellipse 70% 50% at 30% 85%, rgba(24, 96, 60, .35), transparent 70%),
-    radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, rgba(2, 22, 14, .45) 100%);
+    radial-gradient(ellipse 70% 50% at 30% 85%, rgba(24, 96, 60, .35), transparent 70%);
+  background-repeat: no-repeat, repeat, no-repeat, no-repeat, no-repeat;
   background-attachment: fixed;
   color: var(--ink);
   font-family: var(--serif);
@@ -76,8 +83,6 @@ p:last-child { margin-bottom: 0; }
 
 .dark { background: transparent; color: var(--on-green); }
 
-/* 공기방울 캔버스(fx.js)는 z-index 1. 글과 종이는 그 위(2)에 */
-.bubbles { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; }
 .page, .hero-text, .hero-cue, .cards, .big-title, .phead-ko, .statement blockquote, .team, .game,
 .press-key, .press-studio p, .ourgames .empty, footer.site > * { position: relative; z-index: 2; }
 
@@ -138,7 +143,13 @@ header.site {
   color: var(--cream);
   text-align: center;
 }
-.hero-bg { position: absolute; inset: -4%; z-index: -2; }
+.hero-bg {
+  position: absolute;
+  inset: -4%;
+  z-index: -2;
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 96%);
+  mask-image: linear-gradient(180deg, #000 55%, transparent 96%);
+}
 .hero-bg img {
   width: 100%;
   height: 100%;
@@ -152,7 +163,7 @@ header.site {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(6, 51, 30, .25) 0%, rgba(6, 51, 30, 0) 40%, var(--green) 100%);
+  background: linear-gradient(180deg, rgba(6, 51, 30, .25) 0%, rgba(6, 51, 30, 0) 40%, rgba(6, 51, 30, .35) 100%);
 }
 .hero-text { padding: 0 1.5rem; max-width: 60rem; }
 .slogan-en {
