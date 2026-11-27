@@ -244,3 +244,10 @@ body.admin { font-size: 1rem; line-height: 1.6; min-height: 100vh; background: v
 .a-shot-add { display: grid; place-items: center; align-content: center; gap: .1rem; aspect-ratio: 16 / 9; border: 2px dashed var(--green); border-radius: 8px; font-family: var(--display); font-size: .82rem; color: var(--ink-soft); }
 .a-shot-add b { font-size: 1.4rem; line-height: 1; color: var(--green); }
 .a-shot-add:hover { background: var(--cream-deep); }
+
+/* 유튜브 영상 */
+.a-shot-yt { display: flex; gap: .5rem; margin-top: .6rem; }
+.a-shot-yt input { flex: 1; }
+.a-shot.is-video { border-color: var(--amber); }
+.a-shot-video { position: absolute; left: .3rem; top: .3rem; padding: 0 .45rem; border-radius: 999px; background: var(--green); color: var(--cream); font-family: var(--display); font-size: .7rem; }
+.a-shot-yt + .a-hint { margin-top: .35rem; }

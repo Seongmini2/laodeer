@@ -747,7 +747,10 @@
           '<button type="button" class="a-btn small" data-add-store>스토어 추가</button></div></div>' +
         '<div class="a-field"><span>대표 장면 <small>게임 페이지 맨 위와 목록에 쓰여요</small></span>' + dropZone("game-drop", d, "가로로 긴 이미지가 잘 어울려요.") + "</div>" +
         '<div class="a-field"><span>인게임 이미지 <small>게임 페이지 오른쪽 갤러리와 프레스 킷에 쓰여요. 여러 장을 한꺼번에 끌어다 놓을 수 있어요.</small></span>' +
-          '<div class="a-shots" id="game-shots"></div></div>' +
+          '<div class="a-shots" id="game-shots"></div>' +
+          '<div class="a-shot-yt"><input type="url" id="shot-yt" placeholder="유튜브 영상 링크 (https://youtu.be/... 또는 https://www.youtube.com/watch?v=...)" aria-label="유튜브 영상 링크">' +
+          '<button type="button" class="a-btn small" id="shot-yt-add">영상 추가</button></div>' +
+          '<p class="a-hint">영상은 맨 앞에 들어가요. ◀ ▶로 다른 자리로 옮길 수 있어요.</p></div>' +
         '<label class="a-field"><span>대표 장면 설명</span><input type="text" name="alt" value="' + esc(d.alt) + '"></label>' +
         (d.example ? '<label class="a-check"><input type="checkbox" name="example" checked> 예시 표시 유지 <small>실제 게임이면 체크를 풀어주세요</small></label>' : "") +
         '<p class="a-error" id="game-error" role="alert"></p>' +
@@ -829,12 +832,15 @@
       "</div>";
   }
 
+  var YT = /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/))([\w-]{11})/;
+  function ytId(u) { var m = String(u || "").match(YT); return m ? m[1] : ""; }
+
   function bindShotEditor() {
     var box = $("#game-shots"), d = S.game.draft;
     if (!box || !d) return;
     function paint() {
       box.innerHTML = d.shots.map(function (x, i) {
-        return '<div class="a-shot"><img alt="" data-shot-img="' + i + '">' +
+        return '<div class="a-shot' + (ytId(x.src) ? " is-video" : "") + '"><img alt="" data-shot-img="' + i + '">' + (ytId(x.src) ? '<span class="a-shot-video">▶ 영상</span>' : "") +
           '<span class="a-shot-btns">' +
             '<button type="button" data-shot-move="-1" data-i="' + i + '" ' + (i === 0 ? "disabled" : "") + ' aria-label="앞으로">◀</button>' +
             '<button type="button" data-shot-move="1" data-i="' + i + '" ' + (i === d.shots.length - 1 ? "disabled" : "") + ' aria-label="뒤로">▶</button>' +
@@ -845,7 +851,8 @@
         '<input type="file" accept="image/*" multiple hidden id="shot-input">';
       d.shots.forEach(function (x, i) {
         var im = box.querySelector('[data-shot-img="' + i + '"]');
-        (x._blob ? Promise.resolve(x._blob) : imgURL(x.src)).then(function (u) { im.src = u; });
+        var vid = ytId(x.src);
+        (x._blob ? Promise.resolve(x._blob) : vid ? Promise.resolve("https://i.ytimg.com/vi/" + vid + "/hqdefault.jpg") : imgURL(x.src)).then(function (u) { im.src = u; });
       });
     }
     function addFiles(list) {
@@ -867,6 +874,18 @@
       }
     });
     box.addEventListener("change", function (e) { if (e.target.id === "shot-input") { addFiles(e.target.files); e.target.value = ""; } });
+    var ytInput = $("#shot-yt");
+    function addVideo() {
+      var id = ytId(ytInput.value);
+      if (!id) { toast("유튜브 영상 링크를 확인해주세요. 예: https://youtu.be/영상아이디"); ytInput.focus(); return; }
+      if (d.shots.some(function (x) { return ytId(x.src) === id; })) { toast("이미 넣은 영상이에요."); return; }
+      d.shots.unshift({ src: "https://www.youtube.com/watch?v=" + id, _file: null, _blob: "" });
+      ytInput.value = "";
+      S.game.dirty = true; paint();
+      toast("영상을 맨 앞에 넣었어요.");
+    }
+    $("#shot-yt-add").addEventListener("click", addVideo);
+    ytInput.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addVideo(); } });
     box.addEventListener("dragover", function (e) { e.preventDefault(); box.classList.add("over"); });
     box.addEventListener("dragleave", function () { box.classList.remove("over"); });
     box.addEventListener("drop", function (e) { e.preventDefault(); box.classList.remove("over"); addFiles(e.dataTransfer.files); });

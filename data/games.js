@@ -34,7 +34,16 @@ window.LAODEER_GAMES = [
       }
     ],
     "itch": "https://laodeer.itch.io/sleeve-it",
-    "image": "images/2026/game-itch-io-0t8c.png"
+    "image": "images/2026/game-itch-io-0t8c.png",
+    "screenshots": [
+      "images/2026/shot-itch-io-t7rh.png",
+      "images/2026/shot-itch-io-lwoe.png",
+      "images/2026/shot-itch-io-7rcj.png",
+      "images/2026/shot-itch-io-msh2.png",
+      "images/2026/shot-itch-io-fjpe.png",
+      "images/2026/shot-itch-io-57m6.png",
+      "images/2026/shot-itch-io-jfpk.png"
+    ]
   },
   {
     "id": "soul",

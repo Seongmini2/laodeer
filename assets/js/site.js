@@ -417,42 +417,67 @@
       (GAMES.length ? gameCards(GAMES, { eager: true, status: true }) : '<p class="empty">아직 등록한 게임이 없어요.</p>') + "</section>";
   }
 
-  /* 인게임 스크린샷: 큰 화면 한 장 + 썸네일. 썸네일을 누르면 큰 화면이 바뀌고, 큰 화면을 누르면 크게 보기 */
+  /* 인게임 갤러리: 이미지와 유튜브 영상. 큰 화면 한 칸 + 썸네일 줄.
+     영상은 처음엔 썸네일과 재생 버튼만 보여주고, 누르면 그 자리에서 재생(youtube-nocookie). */
+  var YT = /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/))([\w-]{11})/;
+  function ytId(u) { var m = String(u || "").match(YT); return m ? m[1] : ""; }
+  function ytThumb(id) { return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
+
   function shotsHTML(g, shots) {
     if (!shots.length) return "";
-    return '<div class="shots" aria-label="' + esc(g.title) + ' 인게임 이미지">' +
-      '<figure class="shot-main">' + zoomable(shots[0], g.title + " 인게임 이미지 1", g.title, true) +
-        (shots.length > 1 ? '<button type="button" class="shot-nav prev" data-step="-1" aria-label="이전 이미지">‹</button>' +
-          '<button type="button" class="shot-nav next" data-step="1" aria-label="다음 이미지">›</button>' +
+    var n = 0, v = 0;
+    return '<div class="shots" aria-label="' + esc(g.title) + ' 인게임 이미지와 영상">' +
+      '<figure class="shot-main"><div class="shot-stage"></div>' +
+        (shots.length > 1 ? '<button type="button" class="shot-nav prev" data-step="-1" aria-label="이전">‹</button>' +
+          '<button type="button" class="shot-nav next" data-step="1" aria-label="다음">›</button>' +
           '<span class="shot-count" aria-live="polite">1 / ' + shots.length + "</span>" : "") +
       "</figure>" +
       (shots.length > 1 ? '<div class="shot-thumbs">' + shots.map(function (src, i) {
-        return '<button type="button" class="shot-thumb" data-i="' + i + '" data-src="' + esc(src) + '" aria-label="인게임 이미지 ' + (i + 1) + ' 보기" aria-pressed="' + (i === 0) + '">' + img(src, "", i < 4) + "</button>";
+        var id = ytId(src);
+        var label = id ? "영상 " + (++v) + " 보기" : "인게임 이미지 " + (++n) + " 보기";
+        return '<button type="button" class="shot-thumb' + (id ? " is-video" : "") + '" data-i="' + i + '" aria-label="' + label + '" aria-pressed="' + (i === 0) + '">' +
+          img(id ? ytThumb(id) : src, "", i < 4) + (id ? '<span class="thumb-play" aria-hidden="true"></span>' : "") + "</button>";
       }).join("") + "</div>" : "") +
     "</div>";
   }
-  function bindShots() {
+
+  function bindShots(g, shots) {
     var box = document.querySelector(".shots");
     if (!box) return;
+    var stage = box.querySelector(".shot-stage");
     var thumbs = [].slice.call(box.querySelectorAll(".shot-thumb"));
-    var main = box.querySelector(".shot-main .zoom"), pic = main.querySelector("img"), count = box.querySelector(".shot-count");
+    var strip = box.querySelector(".shot-thumbs");
+    var count = box.querySelector(".shot-count");
     var cur = 0;
+    function render(i, first) {
+      var src = shots[i], id = ytId(src);
+      stage.classList.toggle("is-video", !!id);
+      stage.innerHTML = id
+        ? '<button type="button" class="yt-facade" data-yt="' + id + '" aria-label="영상 재생: ' + esc(g.title) + '">' +
+            '<img src="' + ytThumb(id) + '" alt="" decoding="async"' + (first ? ' fetchpriority="high"' : "") + '><span class="yt-play" aria-hidden="true"></span></button>'
+        : zoomable(src, g.title + " 인게임 이미지 " + (i + 1), g.title, !!first);
+    }
     function show(i) {
-      if (!thumbs.length) return;
-      cur = (i + thumbs.length) % thumbs.length;
-      var src = thumbs[cur].dataset.src;
-      pic.src = src; main.dataset.src = src;
-      main.setAttribute("aria-label", "크게 보기: 인게임 이미지 " + (cur + 1));
+      cur = (i + shots.length) % shots.length;
+      render(cur);
       thumbs.forEach(function (t, k) { t.setAttribute("aria-pressed", String(k === cur)); });
-      if (count) count.textContent = (cur + 1) + " / " + thumbs.length;
-      thumbs[cur].scrollIntoView({ block: "nearest", inline: "nearest" });
+      if (count) count.textContent = (cur + 1) + " / " + shots.length;
+      var t = thumbs[cur];
+      if (t && strip) strip.scrollTo({ left: t.offsetLeft - strip.clientWidth / 2 + t.clientWidth / 2, behavior: "smooth" });
     }
     box.addEventListener("click", function (e) {
+      var f = e.target.closest(".yt-facade");
+      if (f) {
+        stage.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + f.dataset.yt + '?autoplay=1&rel=0&playsinline=1" title="' + esc(g.title) + ' 영상" ' +
+          'allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+        return;
+      }
       var t = e.target.closest(".shot-thumb");
       if (t) return show(+t.dataset.i);
       var n = e.target.closest(".shot-nav");
       if (n) show(cur + (+n.dataset.step));
     });
+    render(0, true);
   }
 
   function initGame(main) {
@@ -488,7 +513,7 @@
         '<nav class="tagbar" id="tagbar" aria-label="태그로 보기" hidden></nav>' +
         '<div class="feed" id="feed" aria-live="polite"></div>' +
       "</section>";
-    bindShots();
+    bindShots(g, shots);
     var mine = RECORDS.filter(function (r) { return r.game === g.id; });
     setupFilters($("filters"), $("feed"), mine, { game: g, useHash: false, tagBar: $("tagbar"), emptyText: "이 게임에 연결된 기록이 아직 없어요." });
   }
@@ -548,7 +573,7 @@
         ["Developers", g.developer], ["Publisher", g.publisher], ["Development time", g.devPeriod],
         ["Release Date", g.released], ["Platforms", (g.platforms || []).join(", ")], ["Press contact", STUDIO.pressContact]
       ].filter(function (f) { return f[1]; });
-      var shots = (g.screenshots || []).filter(Boolean).map(function (src, k) { return { image: src, body: g.title + " 인게임 이미지 " + (k + 1) }; })
+      var shots = (g.screenshots || []).filter(function (x) { return x && !ytId(x); }).map(function (src, k) { return { image: src, body: g.title + " 인게임 이미지 " + (k + 1) }; })
         .concat(RECORDS.filter(function (r) { return r.game === g.id && r.image; })).slice(0, 9);
       return '<section class="press" id="' + esc(g.id) + '" aria-labelledby="press-' + esc(g.id) + '">' +
         '<div class="press-head dark"><h1 class="big-title" id="press-' + esc(g.id) + '">' + esc(g.title) + '</h1><p class="phead-ko">PRESS KIT</p>' +
